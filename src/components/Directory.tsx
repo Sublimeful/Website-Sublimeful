@@ -1,7 +1,6 @@
 import { ReactNode, useContext, useState } from "react";
-
 import { FaFolder, FaFolderOpen } from "react-icons/fa"
-import { LevelContext } from "./FileSystemContext";
+import { LevelContext } from "./FileSystem";
 
 export interface DirectoryInfo {
   name: string,
@@ -32,4 +31,3 @@ export default function Directory({ name, files }: DirectoryInfo) {
     </LevelContext.Provider>
   );
 }
-
