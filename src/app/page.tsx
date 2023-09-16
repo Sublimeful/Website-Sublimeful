@@ -1,10 +1,10 @@
 import Image from 'next/image'
-import SideBar from '@/components/SideBar'
+import FileSystem from '@/components/FileSystem'
 
 export default function Home() {
   return (
     <main>
-      <SideBar />
+      <FileSystem />
     </main>
   )
 }
