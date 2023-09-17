@@ -1,30 +1,32 @@
-import { ReactNode, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { FaFolder, FaFolderOpen } from "react-icons/fa"
-import { LevelContext } from "./FileSystem";
+import { FileSystemIcon, FileType, LevelContext } from "./FileSystem";
+import File, { FileInfo } from "./File";
 
 export interface DirectoryInfo {
-  name: string,
-  files: (DirectoryInfo)[]
+  type: FileType.DIRECTORY;
+  name: string;
+  files: (DirectoryInfo | FileInfo)[];
 }
 
 export default function Directory({ name, files }: DirectoryInfo) {
-  const SideBarIcon = (props: { icon: ReactNode }) => (
-    <div className="sidebar-icon" style={{marginLeft: `${level/2}rem`}}>
-      { props.icon }
-    </div>
-  );
-
   let [opened, setOpened] = useState(false);
   const level = useContext(LevelContext);
 
-  const contents = files.map(dir =>
-    <Directory name={dir.name} files={dir.files} />
-  )
+  const contents = files.map(file => {
+    if (file.type === FileType.FILE) {
+      return <File type={file.type} name={file.name} />
+    } else if (file.type === FileType.DIRECTORY) {
+      return <Directory type={file.type} name={file.name} files={file.files} />
+    }
+  })
 
   return (
     <LevelContext.Provider value={level + 1}>
       <a className="flex flex-row gap-1 cursor-pointer" onClick={() => setOpened(!opened)}>
-          <SideBarIcon icon={opened ? <FaFolderOpen size="10" /> : <FaFolder size="10" />} />
+          <FileSystemIcon>
+            {opened ? <FaFolderOpen size="10"/> : <FaFolder size="10"/>}
+          </FileSystemIcon>
           {name}
       </a>
       {opened && contents}

@@ -1,28 +1,31 @@
 "use client"
 
-import { createContext } from "react";
+import { ReactNode, createContext, useContext } from "react";
 import Directory, { DirectoryInfo } from "./Directory";
+import { FileInfo } from "./File";
 
-const FileSystem = () => {
-  const files: DirectoryInfo[] = [
+export enum FileType {
+  DIRECTORY, FILE
+}
+
+export default function FileSystem() {
+  const files: (DirectoryInfo | FileInfo)[] = [
     {
-      name: "hello", files: []
-    },
-    {
-      name: "world", files: [
+      type: FileType.DIRECTORY, name: "hello", files: [
         {
-          name: "foo", files: [
+          type: FileType.FILE, name: "file"
+        },
         {
-          name: "foo", files: [
-        {
-          name: "foo", files: [
-          ]
-        }
-          ]
-        }
+          type: FileType.DIRECTORY, name: "hello", files: [
+            {
+              type: FileType.FILE, name: "file"
+            }
           ]
         }
       ]
+    },
+    {
+      type: FileType.FILE, name: "file"
     }
   ]
 
@@ -30,10 +33,18 @@ const FileSystem = () => {
     <div className="fixed top-0 left-0 h-screen w-20 m-0
                     flex flex-col 
                     bg-gray-900 text-white text-[0.5rem] shadow-lg">
-      <Directory name="/" files={files} />
+      <Directory type={FileType.DIRECTORY} name="/" files={files}/>
+    </div>
+  );
+}
+
+export const FileSystemIcon = ({ children }: { children: ReactNode }) => {
+  const level = useContext(LevelContext);
+  return (
+    <div className="sidebar-icon" style={{marginLeft: `${(level-1)/2}rem`}}>
+      { children }
     </div>
   );
 }
 
 export const LevelContext = createContext(0);
-export default FileSystem;
