@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { FaFolder, FaFolderOpen } from "react-icons/fa"
-import { FileSystemIcon, FileType, LevelContext } from "./FileSystem";
+import { FileSystemIcon, LevelContext } from "./FileSystem";
+import { FileType } from "@/typings/enum";
 import File, { FileInfo } from "./File";
 
 export interface DirectoryInfo {
@@ -15,7 +16,7 @@ export default function Directory({ name, files }: DirectoryInfo) {
 
   const contents = files.map(file => {
     if (file.type === FileType.FILE) {
-      return <File type={file.type} name={file.name} />
+      return <File type={file.type} name={file.name} link={file.link} />
     } else if (file.type === FileType.DIRECTORY) {
       return <Directory type={file.type} name={file.name} files={file.files} />
     }
