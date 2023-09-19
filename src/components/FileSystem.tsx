@@ -1,5 +1,3 @@
-"use client"
-
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext } from "react";
 import { FileType } from "@/typings/enum";
 import { Files } from "@/config";
@@ -27,5 +25,4 @@ export const FileSystemIcon = ({ children }: { children: ReactNode }) => {
 }
 
 export const LevelContext = createContext(0);
-const defaultSetLink:Dispatch<SetStateAction<string>> = () => {};
-export const SetLinkContext = createContext(defaultSetLink);
+export const SetLinkContext = createContext((() => {}) as Dispatch<SetStateAction<string>>);
