@@ -8,6 +8,10 @@ import About from "@/app/about/content"
 export const Files:(DirectoryInfo|FileInfo)[] = [
   {type: FileType.FILE, name: "home", link: "/"},
   {type: FileType.FILE, name: "about", link: "/about"},
+  {type: FileType.DIRECTORY, name: "whatever", files: [
+    {type: FileType.FILE, name: "about", link: "/about"},
+
+  ]},
 ]
 
 export const Pages:{[key: string]:ReactNode} = {

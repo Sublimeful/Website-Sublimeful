@@ -1,7 +1,10 @@
 export default (
-  <main>
+  <main className="pl-2">
     <h1>
-      Hello about
+      About Me:
     </h1>
+    <p>
+      I am a computer science major at UIC.
+    </p>
   </main>
 )

@@ -1,5 +1,5 @@
 export default (
-  <main>
+  <main className="pl-2">
     <h1>
       Hello homepage
     </h1>
