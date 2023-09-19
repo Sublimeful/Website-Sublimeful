@@ -10,6 +10,7 @@ export default function FileSystem({ setLink }: { setLink: Dispatch<SetStateActi
 
   useEffect(() => {
     const mouseMove = function(this: Window, event: MouseEvent) {
+      event.preventDefault()
       const myDiv = fileSystemDiv.current;
       if(!myDiv) return;
       if(drag) {
