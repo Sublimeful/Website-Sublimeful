@@ -1,5 +1,7 @@
 FROM node
+WORKDIR root
 COPY package.json .
 RUN npm install
-COPY .next .next
+COPY . .
+RUN npm run build
 CMD ["npm", "run", "start"]
