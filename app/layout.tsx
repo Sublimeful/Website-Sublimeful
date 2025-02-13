@@ -2,8 +2,8 @@
 import "@/app/globals.css";
 
 export const metadata = {
-  title: "Dashboard",
-  description: "Welcome to my website!",
+  title: "Sublimeful's Website",
+  description: "Homepage",
 };
 
 export default function RootLayout({
@@ -13,8 +13,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="icon"
+          href="https://avatars.githubusercontent.com/u/42013583"
+        />
+      </head>
       <body className="w-screen h-screen bg-white dark:bg-black text-black dark:text-white">
-        <div className="w-full h-full grid grid-rows-[4rem_auto] grid-cols-[24rem_auto]">
+        <div className="w-full h-full grid grid-rows-[4rem_auto] grid-cols-[16rem_auto]">
           {/* Navbar */}
           <div className="col-span-2 border-b flex flex-row items-center border-black dark:border-white">
             <a
@@ -28,7 +34,12 @@ export default function RootLayout({
             </a>
           </div>
           {/* Sidebar */}
-          <div className="border-r border-black dark:border-white" />
+          <div className="flex flex-col [&_a]:before:content-['\00a0>_'] border-r border-black dark:border-white">
+            <a href="/">Homepage</a>
+            <a href="/about">About me</a>
+            <a href="/projects">Projects</a>
+            <a href="/blog">Random stuff</a>
+          </div>
           {/* Content */}
           <div className="w-full h-full overflow-y-auto">{children}</div>
         </div>

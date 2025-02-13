@@ -1,8 +1,9 @@
 export default function Page() {
   return (
-    <>
-      <h1 className="font-bold text-4xl">Hello, my name is Jian Qiang Wu...</h1>
-      <h1 className="font-bold text-4xl">This is my homepage</h1>
-    </>
+    <main className="pl-2">
+      <h1 className="font-bold text-4xl">This is my Homepage</h1>
+      <br />
+      <p className="text-2xl">Hello, my name is Jian Qiang Wu...</p>
+    </main>
   );
 }
