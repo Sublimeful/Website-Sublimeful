@@ -4,50 +4,26 @@ import { useEffect, useState } from "react";
 import Slider from "./Slider";
 
 export default function ThemeSlider() {
-  const [isClient, setIsClient] = useState(false);
-
-  function setDarkTheme() {
-    document.documentElement.classList.remove("light");
-    document.documentElement.classList.add("dark");
-  }
-
-  function setLightTheme() {
-    document.documentElement.classList.remove("dark");
-    document.documentElement.classList.add("light");
-  }
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-
-    // Detect system preference and set the initial theme to it
-    if (typeof localStorage.theme === "undefined") {
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        localStorage.theme = "dark";
-      } else {
-        localStorage.theme = "light";
-      }
-    }
-
-    // Set the theme from localStorage
-    if (localStorage.theme === "dark") {
-      setDarkTheme();
-    } else {
-      setLightTheme();
-    }
+    setMounted(true);
   }, []);
 
   // Prevent prerender error during build process
-  if (!isClient) return null;
+  if (!mounted) return null;
 
   return (
     <Slider
       onClick={(checked) => {
         if (checked) {
           localStorage.theme = "light";
-          setLightTheme();
+          document.documentElement.classList.remove("dark");
+          document.documentElement.classList.add("light");
         } else {
           localStorage.theme = "dark";
-          setDarkTheme();
+          document.documentElement.classList.remove("light");
+          document.documentElement.classList.add("dark");
         }
       }}
       defaultChecked={localStorage.theme === "light"}

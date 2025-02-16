@@ -13,7 +13,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              const theme =
+                localStorage.theme ||
+                (window.matchMedia("(prefers-color-scheme: dark)").matches
+                  ? "dark"
+                  : "light");
+              document.documentElement.classList.add(theme);
+            `,
+          }}
+        />
+      </head>
       <body className="w-screen h-screen bg-white dark:bg-black text-black dark:text-white">
         <div className="w-full h-full grid grid-rows-[4rem_auto]">
           {/* Navbar */}
