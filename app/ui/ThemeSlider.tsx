@@ -8,6 +8,9 @@ export default function ThemeSlider() {
     document.documentElement.classList.add(localStorage.theme);
   }, []);
 
+  // Prevent prerender error during build process
+  if (typeof window === "undefined") return null;
+
   return (
     <Slider
       onClick={(checked) => {
