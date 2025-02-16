@@ -18,12 +18,12 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              const theme =
+              localStorage.theme =
                 localStorage.theme ||
                 (window.matchMedia("(prefers-color-scheme: dark)").matches
                   ? "dark"
                   : "light");
-              document.documentElement.classList.add(theme);
+              document.documentElement.classList.add(localStorage.theme);
             `,
           }}
         />
