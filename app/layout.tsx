@@ -1,5 +1,6 @@
 // These styles apply to every route in the application
 import "@/app/globals.css";
+import ThemeSlider from "./ui/ThemeSlider";
 
 export const metadata = {
   title: "Sublimeful's Website",
@@ -13,12 +14,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link
-          rel="icon"
-          href="https://avatars.githubusercontent.com/u/42013583"
-        />
-      </head>
       <body className="w-screen h-screen bg-white dark:bg-black text-black dark:text-white">
         <div className="w-full h-full grid grid-rows-[4rem_auto]">
           {/* Navbar */}
@@ -30,11 +25,11 @@ export default function RootLayout({
               >
                 <img src="https://avatars.githubusercontent.com/u/42013583" />
               </a>
-              <a href="https://github.com/Sublimeful">
-                Sublimeful
-              </a>
+              <a href="https://github.com/Sublimeful">Sublimeful</a>
             </div>
-            <div className="flex flex-row gap-10 mr-5">
+            {/* Light/Dark mode toggle */}
+            <ThemeSlider />
+            <div className="flex flex-row gap-10 mr-10">
               <a href="/">Homepage</a>
               <a href="/about">About me</a>
               <a href="/projects">Projects</a>
