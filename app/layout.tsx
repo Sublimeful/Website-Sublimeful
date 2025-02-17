@@ -1,6 +1,10 @@
 // These styles apply to every route in the application
 import "@/app/globals.css";
+
 import ThemeSlider from "./ui/ThemeSlider";
+import Picker from "./ui/Picker";
+import PickerItem from "./ui/PickerItem";
+import CursorPicker from "./ui/CursorPicker";
 
 export const metadata = {
   title: "Sublimeful's Website",
@@ -43,6 +47,8 @@ export default function RootLayout({
             </div>
             {/* Light/Dark mode toggle */}
             <ThemeSlider />
+            {/* Cursor picker */}
+            <CursorPicker />
             <div className="flex flex-row gap-10 mr-10">
               <a href="/">Homepage</a>
               <a href="/about">About me</a>
