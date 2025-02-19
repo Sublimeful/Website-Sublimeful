@@ -2,8 +2,6 @@
 import "@/app/globals.css";
 
 import ThemeSlider from "./ui/ThemeSlider";
-import Picker from "./ui/Picker";
-import PickerItem from "./ui/PickerItem";
 import CursorPicker from "./ui/CursorPicker";
 import Cursor from "./ui/Cursor";
 

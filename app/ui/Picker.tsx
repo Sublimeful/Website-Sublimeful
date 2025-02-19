@@ -4,7 +4,13 @@ import { useEffect, useRef, useState } from "react";
 
 import PickerPopup from "./PickerPopup";
 
-export default function Picker({ children }: { children: React.ReactNode }) {
+export default function Picker({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const [showPopup, setShowPopup] = useState(false);
 
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +30,7 @@ export default function Picker({ children }: { children: React.ReactNode }) {
   return (
     <div
       ref={pickerRef}
-      className="w-8 h-8 rounded-full bg-black dark:bg-white cursor-pointer"
+      className={`w-8 h-8 rounded-full bg-black dark:bg-white cursor-pointer ${className}`}
     >
       <PickerPopup ref={popupRef} visible={showPopup}>
         {children}

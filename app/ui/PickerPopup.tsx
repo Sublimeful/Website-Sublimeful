@@ -9,7 +9,7 @@ export default forwardRef(function PickerPopup(
   return (
     <div
       ref={ref}
-      className="absolute translate-7 border-black border-2 cursor-auto grid grid-cols-3 gap-0.5 bg-black dark:bg-white"
+      className="absolute translate-7 border-black dark:border-white border-2 cursor-auto grid grid-cols-3 gap-0.5 bg-black dark:bg-white"
     >
       {children}
     </div>
