@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @variant dark (&:where(.dark, .dark *));
 
+@utility pixelate {
+  image-rendering: pixelated;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 0.5rem;

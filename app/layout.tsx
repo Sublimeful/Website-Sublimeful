@@ -5,6 +5,7 @@ import ThemeSlider from "./ui/ThemeSlider";
 import Picker from "./ui/Picker";
 import PickerItem from "./ui/PickerItem";
 import CursorPicker from "./ui/CursorPicker";
+import Cursor from "./ui/Cursor";
 
 export const metadata = {
   title: "Sublimeful's Website",
@@ -22,12 +23,14 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              localStorage.theme =
-                localStorage.theme ||
-                (window.matchMedia("(prefers-color-scheme: dark)").matches
-                  ? "dark"
-                  : "light");
-              document.documentElement.classList.add(localStorage.theme);
+              localStorage.setItem(
+                "theme",
+                localStorage.getItem("theme") ||
+                  (window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light"),
+              );
+              document.documentElement.classList.add(localStorage.getItem("theme"));
             `,
           }}
         />
@@ -49,6 +52,8 @@ export default function RootLayout({
             <ThemeSlider />
             {/* Cursor picker */}
             <CursorPicker />
+            {/* Cursor */}
+            <Cursor />
             <div className="flex flex-row gap-10 mr-10">
               <a href="/">Homepage</a>
               <a href="/about">About me</a>
