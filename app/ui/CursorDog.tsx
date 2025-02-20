@@ -53,8 +53,10 @@ export default function CursorDog() {
       case "walking":
         if (dist > 1) {
           const normDirVec = getNormDirVec(dogPos, mousePos.current);
-          const newX = dogPos.x - normDirVec.x * dogSpeed.current;
-          const newY = dogPos.y - normDirVec.y * dogSpeed.current;
+          const newX =
+            dogPos.x - normDirVec.x * Math.min(dist, dogSpeed.current);
+          const newY =
+            dogPos.y - normDirVec.y * Math.min(dist, dogSpeed.current);
           const newDogPos = { x: newX, y: newY };
           setDogPos(newDogPos);
         } else {
