@@ -6,8 +6,8 @@ interface CursorDogProps {
 }
 
 export default function CursorDog(props: CursorDogProps) {
-  const requestRef = useRef<number>(null);
   const { mousePos } = props;
+  const requestRef = useRef<number>(null);
   const dogSpeed = useRef(2);
   const [dogPos, setDogPos] = usePersistentState<{ x: number; y: number }>(
     "dogPos",
@@ -46,6 +46,7 @@ export default function CursorDog(props: CursorDogProps) {
   ) {
     const dist = getDist(vectorA, vectorB);
     const dirVec = getDirVec(vectorA, vectorB);
+
     return { x: dirVec.x / dist, y: dirVec.y / dist };
   }
 
@@ -61,12 +62,13 @@ export default function CursorDog(props: CursorDogProps) {
       case "walking":
         if (dist > 1) {
           const normDirVec = getNormDirVec(dogPos, mousePos);
+
           const newX =
             dogPos.x - normDirVec.x * Math.min(dist, dogSpeed.current);
           const newY =
             dogPos.y - normDirVec.y * Math.min(dist, dogSpeed.current);
-          const newDogPos = { x: newX, y: newY };
-          setDogPos(newDogPos);
+
+          setDogPos({ x: newX, y: newY });
         } else {
           dogState.current = "idle";
         }

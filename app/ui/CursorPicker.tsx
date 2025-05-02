@@ -21,7 +21,6 @@ export default function CursorPicker() {
 
     updateCursorImage();
 
-    console.log("OGEY");
     addEventListener("cursor-change", updateCursorImage);
     addEventListener("storage", updateCursorImage);
     return () => {
