@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function usePersistantState<T>(
+export default function usePersistentState<T>(
   key: string,
   initialValue: T,
 ): [T, (value: T) => void] {

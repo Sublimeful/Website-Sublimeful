@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import usePersistentState from "../hooks/usePersistentState";
 import CursorDog from "./CursorDog";
-import usePersistantState from "../hooks/usePersistantState";
 
 export default function Cursor() {
-  const [mousePos, setMousePos] = usePersistantState("mousePos", {
+  const [mousePos, setMousePos] = usePersistentState("mousePos", {
     x: 0,
     y: 0,
   });

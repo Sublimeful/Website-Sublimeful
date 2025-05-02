@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import usePersistantState from "../hooks/usePersistantState";
+import usePersistentState from "../hooks/usePersistentState";
 
 interface CursorDogProps {
   mousePos: { x: number; y: number };
@@ -9,7 +9,7 @@ export default function CursorDog(props: CursorDogProps) {
   const requestRef = useRef<number>(null);
   const { mousePos } = props;
   const dogSpeed = useRef(2);
-  const [dogPos, setDogPos] = usePersistantState<{ x: number; y: number }>(
+  const [dogPos, setDogPos] = usePersistentState<{ x: number; y: number }>(
     "dogPos",
     {
       x: -32,
