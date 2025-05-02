@@ -2,9 +2,28 @@
 
 import { useEffect, useState } from "react";
 import CursorDog from "./CursorDog";
+import usePersistantState from "../hooks/usePersistantState";
 
 export default function Cursor() {
+  const [mousePos, setMousePos] = usePersistantState("mousePos", {
+    x: 0,
+    y: 0,
+  });
   const [cursor, setCursor] = useState("none");
+
+  useEffect(() => {
+    function updateMousePos(e: MouseEvent) {
+      setMousePos({
+        x: e.x,
+        y: e.y,
+      });
+    }
+
+    addEventListener("mousemove", updateMousePos);
+    return () => {
+      removeEventListener("mousemove", updateMousePos);
+    };
+  }, []);
 
   useEffect(() => {
     function updateCursor() {
@@ -23,7 +42,7 @@ export default function Cursor() {
 
   switch (cursor) {
     case "dog":
-      return <CursorDog />;
+      return <CursorDog mousePos={mousePos} />;
     default:
       return null;
   }

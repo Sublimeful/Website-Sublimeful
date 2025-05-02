@@ -1,13 +1,21 @@
 import { useEffect, useRef, useState } from "react";
+import usePersistantState from "../hooks/usePersistantState";
 
-export default function CursorDog() {
+interface CursorDogProps {
+  mousePos: { x: number; y: number };
+}
+
+export default function CursorDog(props: CursorDogProps) {
   const requestRef = useRef<number>(null);
-  const mousePos = useRef<{ x: number; y: number }>({ x: -32, y: -32 });
+  const { mousePos } = props;
   const dogSpeed = useRef(2);
-  const [dogPos, setDogPos] = useState<{ x: number; y: number }>({
-    x: -32,
-    y: -32,
-  });
+  const [dogPos, setDogPos] = usePersistantState<{ x: number; y: number }>(
+    "dogPos",
+    {
+      x: -32,
+      y: -32,
+    },
+  );
   const [facing, setFacing] = useState<"left" | "right">("left");
   const dogState = useRef<"idle" | "walking">("idle");
   // Frame -3 = sitting, Frames 0 to -2 = walking
@@ -42,7 +50,7 @@ export default function CursorDog() {
   }
 
   function follow() {
-    const dist = getDist(dogPos, mousePos.current);
+    const dist = getDist(dogPos, mousePos);
 
     switch (dogState.current) {
       case "idle":
@@ -52,7 +60,7 @@ export default function CursorDog() {
         break;
       case "walking":
         if (dist > 1) {
-          const normDirVec = getNormDirVec(dogPos, mousePos.current);
+          const normDirVec = getNormDirVec(dogPos, mousePos);
           const newX =
             dogPos.x - normDirVec.x * Math.min(dist, dogSpeed.current);
           const newY =
@@ -67,7 +75,7 @@ export default function CursorDog() {
   }
 
   function animate(time: number) {
-    if (dogPos.x - mousePos.current.x > 0) setFacing("right");
+    if (dogPos.x - mousePos.x > 0) setFacing("right");
     else setFacing("left");
 
     switch (dogState.current) {
@@ -84,24 +92,14 @@ export default function CursorDog() {
   function update(time: number) {
     follow();
     animate(time);
-    requestRef.current = requestAnimationFrame(update);
   }
 
   useEffect(() => {
-    function updateMousePos(e: MouseEvent) {
-      mousePos.current = {
-        x: e.x,
-        y: e.y,
-      };
-    }
-
-    addEventListener("mousemove", updateMousePos);
     requestRef.current = requestAnimationFrame(update);
     return () => {
-      removeEventListener("mousemove", updateMousePos);
       cancelAnimationFrame(requestRef.current);
     };
-  }, [dogPos, frame, facing]);
+  }, [mousePos, dogPos]);
 
   return (
     <div
