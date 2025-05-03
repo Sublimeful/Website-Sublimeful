@@ -18,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -33,35 +34,30 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="w-screen h-screen bg-white dark:bg-black text-black dark:text-white">
-        <div className="w-full h-full grid grid-rows-[4rem_auto]">
-          {/* Navbar */}
-          <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-row gap-4 ml-4 items-center">
-              <a
-                className="w-10 h-10 rounded-full overflow-clip"
-                href="https://github.com/Sublimeful"
-              >
-                <img src="https://avatars.githubusercontent.com/u/42013583" />
-              </a>
-              <a href="https://github.com/Sublimeful">Sublimeful</a>
-            </div>
-            {/* Light/Dark mode toggle */}
-            <ThemeSlider />
-            {/* Cursor picker */}
-            <CursorPicker />
-            {/* Cursor */}
-            <Cursor />
-            <div className="flex flex-row gap-10 mr-10">
-              <a href="/">Homepage</a>
-              <a href="/about">About me</a>
-              <a href="/projects">Projects</a>
-              <a href="/blog">Random stuff</a>
-            </div>
+      <body className="bg-white dark:bg-black text-black dark:text-white">
+        {/* Navbar */}
+        <div className="flex flex-row flex-wrap gap-x-10 p-4 items-center">
+          <div className="flex flex-row gap-x-4 items-center">
+            <a
+              className="w-10 h-10 rounded-full overflow-clip"
+              href="https://github.com/Sublimeful"
+            >
+              <img src="https://avatars.githubusercontent.com/u/42013583" />
+            </a>
+            <a href="https://github.com/Sublimeful">Sublimeful</a>
           </div>
-          {/* Content */}
-          <div className="w-full h-full overflow-y-auto">{children}</div>
+          {/* Light/Dark mode toggle */}
+          <ThemeSlider />
+          {/* Cursor picker */}
+          <CursorPicker />
+          {/* Cursor */}
+          <Cursor />
+          <a href="/">Homepage</a>
+          <a href="/about">About me</a>
+          <a href="/projects">Projects</a>
         </div>
+        {/* Content */}
+        {children}
       </body>
     </html>
   );
