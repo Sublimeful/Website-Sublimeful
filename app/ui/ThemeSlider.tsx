@@ -27,7 +27,7 @@ export default function ThemeSlider() {
         }
       }}
       defaultChecked={localStorage.getItem("theme") === "light"}
-      className="[&>div]:before:block [&>div]:peer-checked:before:bg-[url('/sun.svg')] [&>div]:before:bg-[url('/moon.svg')] [&>div]:before:bg-[4px_4px] [&>div]:before:bg-no-repeat [&>div]:before:w-full [&>div]:before:h-full [&>div]:peer-not-checked:before:filter-[invert(100%)]"
+      className="[&>div]:before:block [&>div]:peer-checked:before:bg-[url('/sun.svg')] [&>div]:before:bg-[url('/moon.svg')] [&>div]:before:bg-[4px_4px] [&>div]:before:bg-no-repeat [&>div]:before:w-full [&>div]:before:h-full [&>div]:peer-not-checked:before:filter-[invert()]"
     />
   );
 }

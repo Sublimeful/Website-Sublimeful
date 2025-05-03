@@ -1,5 +1,5 @@
 export const metadata = {
-  description: "About me",
+  description: "Word guessing game",
 };
 
 export default function RootLayout({
