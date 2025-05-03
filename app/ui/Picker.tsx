@@ -19,8 +19,9 @@ export default function Picker({
   useEffect(() => {
     function onClick(e: MouseEvent) {
       if (e.target === pickerRef.current) setShowPopup(!showPopup);
-      else if (showPopup && !popupRef.current.contains(e.target as Node))
+      else if (showPopup && !popupRef.current.contains(e.target as Node)) {
         setShowPopup(false);
+      }
     }
 
     document.body.addEventListener("click", onClick);
