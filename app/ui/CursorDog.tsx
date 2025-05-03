@@ -101,7 +101,7 @@ export default function CursorDog(props: CursorDogProps) {
     return () => {
       cancelAnimationFrame(requestRef.current);
     };
-  }, [mousePos, dogPos]);
+  }, [mousePos, dogPos, frame]);
 
   return (
     <div
