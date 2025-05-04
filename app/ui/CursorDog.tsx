@@ -5,8 +5,7 @@ interface CursorDogProps {
   mousePos: { x: number; y: number };
 }
 
-export default function CursorDog(props: CursorDogProps) {
-  const { mousePos } = props;
+export default function CursorDog({ mousePos }: CursorDogProps) {
   const requestRef = useRef<number>(null);
   const dogSpeed = useRef(2);
   const [dogPos, setDogPos] = usePersistentState<{ x: number; y: number }>(
@@ -63,10 +62,10 @@ export default function CursorDog(props: CursorDogProps) {
         if (dist > 1) {
           const normDirVec = getNormDirVec(dogPos, mousePos);
 
-          const newX = dogPos.x -
-            normDirVec.x * Math.min(dist, dogSpeed.current);
-          const newY = dogPos.y -
-            normDirVec.y * Math.min(dist, dogSpeed.current);
+          const newX =
+            dogPos.x - normDirVec.x * Math.min(dist, dogSpeed.current);
+          const newY =
+            dogPos.y - normDirVec.y * Math.min(dist, dogSpeed.current);
 
           setDogPos({ x: newX, y: newY });
         } else {
@@ -112,7 +111,6 @@ export default function CursorDog(props: CursorDogProps) {
         backgroundPosition: `${frame * 32}px`,
         transform: facing === "left" ? "scaleX(1)" : "scaleX(-1)",
       }}
-    >
-    </div>
+    ></div>
   );
 }
