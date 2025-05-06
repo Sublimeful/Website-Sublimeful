@@ -190,7 +190,7 @@ export default function Page() {
               </li>
               <li>
                 The 1st number tells you how many letters you got correct, the
-                2nd number shows how many letters are in the right position.
+                2nd number tells you how many letters are in the right position.
               </li>
             </ul>
             <br />

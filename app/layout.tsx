@@ -40,7 +40,7 @@ export default function RootLayout({
       </head>
       <body className="bg-white dark:bg-black text-black dark:text-white">
         {/* Navbar */}
-        <div className="flex flex-row flex-wrap gap-x-10 p-4 items-center">
+        <div className="flex flex-row flex-wrap gap-x-10 gap-y-4 p-4 items-center">
           <div className="flex flex-row gap-x-4 items-center">
             <a
               className="w-10 h-10 rounded-full overflow-clip"
