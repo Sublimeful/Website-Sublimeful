@@ -198,7 +198,7 @@ export default function Page() {
       {/* Instructions popup */}
       {instructionsVisible && (
         <div className="fixed z-40 w-full h-full bg-[rgb(0,0,0,.8)]">
-          <div className="fixed z-40 py-4 px-8 w-full sm:w-3/4 md:w-1/2 h-1/2 md:h-max top-1/2 left-1/2 -translate-1/2 bg-white dark:bg-black border-2 overflow-y-scroll">
+          <div className="fixed z-40 py-4 px-8 w-full sm:w-3/4 md:w-1/2 h-2/3 md:h-max top-1/2 left-1/2 -translate-1/2 bg-white dark:bg-black border-2 overflow-y-scroll">
             <h1 className="text-center font-bold text-3xl">WordScope</h1>
             <br />
             <h2 className="font-bold text-2xl">How to play?</h2>
