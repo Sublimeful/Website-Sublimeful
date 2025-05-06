@@ -1,3 +1,12 @@
 .guess-history {
   scrollbar-gutter: stable both-edges;
 }
+
+.guess-feedback {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.guess-feedback::-webkit-scrollbar {
+  display: none;
+}

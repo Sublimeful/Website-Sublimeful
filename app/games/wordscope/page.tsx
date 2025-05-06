@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Keyboard from "./ui/Keyboard";
 import wordlist from "./wordlist";
 import styles from "./styles.module.css";
@@ -10,6 +10,34 @@ export default function Page() {
   const [guessHistory, setGuessHistory] = useState<Array<string>>([]);
   const [guess, setGuess] = useState<string>("");
   const todaysWord = getTodaysWord();
+  const guessHistoryRef = useRef<HTMLDivElement>(null);
+  const guessFeedbackRef = useRef<HTMLDivElement>(null);
+
+  function getGuessFeedback(guess: string) {
+    const todaysWordCounter = {};
+    const guessCounter = {};
+
+    let rightLetters = 0;
+    let rightPositions = 0;
+
+    for (let i = 0; i < todaysWord.length; i++) {
+      if (guess[i] == todaysWord[i]) {
+        rightPositions++;
+      }
+      todaysWordCounter[todaysWord[i]] = todaysWordCounter[todaysWord[i]] ??
+        0 + 1;
+      guessCounter[guess[i]] = guessCounter[guess[i]] ?? 0 + 1;
+    }
+
+    for (const letter of Object.keys(todaysWordCounter)) {
+      rightLetters += Math.min(
+        todaysWordCounter[letter],
+        guessCounter[letter] ?? 0,
+      );
+    }
+
+    return [rightLetters, rightPositions];
+  }
 
   function getTodaysWord(dayOffset: number = 0) {
     const dayInMs = 1000 * 60 * 60 * 24;
@@ -40,7 +68,7 @@ export default function Page() {
         default:
           if (key.match(/^[A-Z]$/i)) {
             setGuess((prevGuess) =>
-              (prevGuess + key.toLowerCase()).slice(0, 5),
+              (prevGuess + key.toLowerCase()).slice(0, 5)
             );
           }
           break;
@@ -50,6 +78,23 @@ export default function Page() {
     addEventListener("keydown", onKeyDown);
     return () => removeEventListener("keydown", onKeyDown);
   });
+
+  useEffect(() => {
+    function syncScroll(ev: Event) {
+      if (ev.currentTarget === guessHistoryRef.current) {
+        guessFeedbackRef.current.scrollTop = guessHistoryRef.current.scrollTop;
+      } else {
+        guessHistoryRef.current.scrollTop = guessFeedbackRef.current.scrollTop;
+      }
+    }
+
+    guessHistoryRef.current.addEventListener("scroll", syncScroll);
+    guessFeedbackRef.current.addEventListener("scroll", syncScroll);
+    return () => {
+      guessHistoryRef.current.removeEventListener("scroll", syncScroll);
+      guessFeedbackRef.current.removeEventListener("scroll", syncScroll);
+    };
+  }, []);
 
   return (
     <main className="p-4 border-t-1">
@@ -68,12 +113,15 @@ export default function Page() {
         </div>
         {/* Guess History */}
         <div
-          className={`${styles["guess-history"]} w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
+          ref={guessHistoryRef}
+          className={`${
+            styles["guess-history"]
+          } w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
         >
           <div className="scale-x-[-1] w-full grid place-items-center">
-            {guessHistory.map((word, wordIndex) => (
-              <div key={wordIndex} className="flex flex-row gap-x-4">
-                {word.split("").map((letter, letterIndex) => (
+            {guessHistory.map((guess, guessIndex) => (
+              <div key={guessIndex} className="flex flex-row gap-x-4">
+                {guess.split("").map((letter, letterIndex) => (
                   <div key={letterIndex} className="w-4 h-8 text-center">
                     {letter.toUpperCase()}
                   </div>
@@ -83,14 +131,26 @@ export default function Page() {
           </div>
         </div>
         {/* Guess Feedback */}
-        <div className="row-start-2 col-start-3 w-full h-64 pl-6 overflow-y-scroll flex flex-col">
-          <div className="flex flex-row gap-x-4">
-            <h1>100</h1>
-            <h1>2</h1>
-          </div>
+        <div
+          ref={guessFeedbackRef}
+          className={`${
+            styles["guess-feedback"]
+          } row-start-2 col-start-3 w-full h-64 pl-6 overflow-y-scroll flex flex-col`}
+        >
+          {guessHistory.map((guess, guessIndex) => {
+            const feedback = getGuessFeedback(guess);
+
+            return (
+              <div key={guessIndex} className="flex flex-row gap-x-4">
+                <h1 className="h-8">{feedback[0]}</h1>
+                <h1 className="h-8">{feedback[1]}</h1>
+              </div>
+            );
+          })}
         </div>
         {/* Divider */}
-        <div className="row-start-1 col-start-2 row-span-2 w-full h-full bg-black"></div>
+        <div className="row-start-1 col-start-2 row-span-2 w-full h-full bg-black">
+        </div>
       </div>
       <Keyboard
         onKeyPress={(key: string) => {
@@ -103,7 +163,7 @@ export default function Page() {
               break;
             default:
               setGuess((prevGuess) =>
-                (prevGuess + key.toLowerCase()).slice(0, 5),
+                (prevGuess + key.toLowerCase()).slice(0, 5)
               );
               break;
           }

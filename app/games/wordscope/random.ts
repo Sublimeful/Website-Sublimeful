@@ -19,8 +19,7 @@ class MersenneTwister {
     this.mt[0] = s >>> 0;
     for (this.mti = 1; this.mti < MersenneTwister.N; this.mti++) {
       const s = this.mt[this.mti - 1] ^ (this.mt[this.mti - 1] >>> 30);
-      this.mt[this.mti] =
-        ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
+      this.mt[this.mti] = ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
         (s & 0x0000ffff) * 1812433253 +
         this.mti;
       this.mt[this.mti] >>>= 0;
@@ -36,10 +35,9 @@ class MersenneTwister {
       j = 0;
     for (let len = Math.max(MersenneTwister.N, k); len > 0; len--) {
       const s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
-      this.mt[i] =
-        (this.mt[i] ^
-          (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
-            (s & 0x0000ffff) * 1664525)) +
+      this.mt[i] = (this.mt[i] ^
+        (((((s & 0xffff0000) >>> 16) * 1664525) << 16) +
+          (s & 0x0000ffff) * 1664525)) +
         init_key[j] +
         j;
       this.mt[i] >>>= 0;
@@ -54,10 +52,9 @@ class MersenneTwister {
 
     for (let len = MersenneTwister.N - 1; len > 0; len--) {
       const s = this.mt[i - 1] ^ (this.mt[i - 1] >>> 30);
-      this.mt[i] =
-        (this.mt[i] ^
-          (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
-            (s & 0x0000ffff) * 1566083941)) -
+      this.mt[i] = (this.mt[i] ^
+        (((((s & 0xffff0000) >>> 16) * 1566083941) << 16) +
+          (s & 0x0000ffff) * 1566083941)) -
         i;
       this.mt[i] >>>= 0;
       i++;
@@ -81,26 +78,22 @@ class MersenneTwister {
       }
 
       for (kk = 0; kk < MersenneTwister.N - MersenneTwister.M; kk++) {
-        y =
-          (this.mt[kk] & MersenneTwister.UPPER_MASK) |
+        y = (this.mt[kk] & MersenneTwister.UPPER_MASK) |
           (this.mt[kk + 1] & MersenneTwister.LOWER_MASK);
-        this.mt[kk] =
-          this.mt[kk + MersenneTwister.M] ^ (y >>> 1) ^ mag01[y & 1];
+        this.mt[kk] = this.mt[kk + MersenneTwister.M] ^ (y >>> 1) ^
+          mag01[y & 1];
       }
       for (; kk < MersenneTwister.N - 1; kk++) {
-        y =
-          (this.mt[kk] & MersenneTwister.UPPER_MASK) |
+        y = (this.mt[kk] & MersenneTwister.UPPER_MASK) |
           (this.mt[kk + 1] & MersenneTwister.LOWER_MASK);
-        this.mt[kk] =
-          this.mt[kk + (MersenneTwister.M - MersenneTwister.N)] ^
+        this.mt[kk] = this.mt[kk + (MersenneTwister.M - MersenneTwister.N)] ^
           (y >>> 1) ^
           mag01[y & 1];
       }
-      y =
-        (this.mt[MersenneTwister.N - 1] & MersenneTwister.UPPER_MASK) |
+      y = (this.mt[MersenneTwister.N - 1] & MersenneTwister.UPPER_MASK) |
         (this.mt[0] & MersenneTwister.LOWER_MASK);
-      this.mt[MersenneTwister.N - 1] =
-        this.mt[MersenneTwister.M - 1] ^ (y >>> 1) ^ mag01[y & 1];
+      this.mt[MersenneTwister.N - 1] = this.mt[MersenneTwister.M - 1] ^
+        (y >>> 1) ^ mag01[y & 1];
       this.mti = 0;
     }
 
