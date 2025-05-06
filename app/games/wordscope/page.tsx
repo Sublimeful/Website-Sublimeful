@@ -259,20 +259,25 @@ export default function Page() {
             ))}
           </div>
         </div>
+        {/* Guess Feedback Legend */}
+        <div className="row-start-1 col-start-3 w-full flex flex-row justify-around">
+          <div className="w-8 h-8 bg-yellow-500 rounded-lg" />
+          <div className="w-8 h-8 bg-green-500 rounded-lg" />
+        </div>
         {/* Guess Feedback */}
         <div
           ref={guessFeedbackRef}
           className={`${
             styles["guess-feedback"]
-          } row-start-2 col-start-3 w-full h-64 pl-6 overflow-y-scroll flex flex-col`}
+          } row-start-2 col-start-3 w-full h-64 overflow-y-scroll flex flex-col`}
         >
           {guessHistory.map((guess, guessIndex) => {
             const feedback = getGuessFeedback(guess);
 
             return (
-              <div key={guessIndex} className="flex flex-row gap-x-4">
-                <h1 className="h-8">{feedback[0]}</h1>
-                <h1 className="h-8">{feedback[1]}</h1>
+              <div key={guessIndex} className="flex flex-row justify-around">
+                <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
+                <h1 className="w-8 h-8 text-center">{feedback[1]}</h1>
               </div>
             );
           })}

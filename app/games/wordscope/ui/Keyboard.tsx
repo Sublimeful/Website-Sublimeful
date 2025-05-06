@@ -3,14 +3,16 @@ import { MouseEventHandler } from "react";
 interface KeyProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
   children: React.ReactNode;
+  title?: string;
   className?: string;
 }
-function Key({ onClick, children, className }: KeyProps) {
+function Key({ onClick, children, title, className }: KeyProps) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`cursor-pointer w-8 md:w-12 h-12 text-xs rounded-md bg-gray-300 dark:bg-gray-600 ${className}`}
+      title={title}
+      className={`cursor-pointer w-10 md:w-12 h-12 text-xs rounded-md bg-gray-300 dark:bg-gray-600 ${className}`}
     >
       {children}
     </button>
@@ -49,10 +51,15 @@ export default function Keyboard({ onKeyPress }: KeyboardProps) {
       </div>
       <div className="flex flex-row gap-x-1">
         <Key
-          className="md:w-16 w-12 grid place-items-center"
           onClick={() => onKeyPress("Backspace")}
+          title="Backspace Key"
+          className="md:w-16 w-12 grid place-items-center"
         >
-          <img src="/backspace.svg" className="dark:filter-[invert()]" />
+          <img
+            src="/backspace.svg"
+            alt="backspace"
+            className="dark:filter-[invert()]"
+          />
         </Key>
         <Key onClick={() => onKeyPress("z")}>Z</Key>
         <Key onClick={() => onKeyPress("x")}>X</Key>
@@ -62,11 +69,13 @@ export default function Keyboard({ onKeyPress }: KeyboardProps) {
         <Key onClick={() => onKeyPress("n")}>N</Key>
         <Key onClick={() => onKeyPress("m")}>M</Key>
         <Key
-          className="md:w-16 w-12 grid place-items-center"
           onClick={() => onKeyPress("Enter")}
+          title="Enter Key"
+          className="md:w-16 w-12 grid place-items-center"
         >
           <img
             src="/arrow-return-right.svg"
+            alt="arrow-return-right"
             className="dark:filter-[invert()]"
           />
         </Key>
