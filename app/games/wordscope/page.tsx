@@ -227,7 +227,7 @@ export default function Page() {
           </div>
         </div>
       )}
-      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[12rem_2px_12rem] place-items-center">
+      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[13rem_2px_13rem] place-items-center">
         {/* Guess */}
         <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
           {guess
@@ -260,7 +260,7 @@ export default function Page() {
           </div>
         </div>
         {/* Guess Feedback Legend */}
-        <div className="row-start-1 col-start-3 w-full flex flex-row pl-8 gap-8">
+        <div className="row-start-1 col-start-3 w-full flex flex-row pl-12 gap-12">
           <div className="w-8 h-8 bg-yellow-500 rounded-lg" />
           <div className="w-8 h-8 bg-green-500 rounded-lg" />
         </div>
@@ -275,7 +275,7 @@ export default function Page() {
             const feedback = getGuessFeedback(guess);
 
             return (
-              <div key={guessIndex} className="flex flex-row pl-8 gap-8">
+              <div key={guessIndex} className="flex flex-row pl-12 gap-12">
                 <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
                 <h1 className="w-8 h-8 text-center">{feedback[1]}</h1>
               </div>
