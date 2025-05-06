@@ -182,14 +182,17 @@ export default function Page() {
             <h1 className="text-center font-bold text-3xl">WordScope</h1>
             <br />
             <h2 className="font-bold text-2xl">How to play?</h2>
-            <p>
-              - Find the secret word. You have unlimited guesses.
-              <br />- Whenever you guess, you are given feedback in the form of
-              2 numbers.
-              <br />{" "}
-              - The 1st number tells you how many letters you got correct, the
-              2nd number shows how many letters are in the right position.
-            </p>
+            <ul className="list-inside list-disc">
+              <li>Find the secret word. You have unlimited guesses.</li>
+              <li>
+                Whenever you guess, you are given feedback in the form of 2
+                numbers.
+              </li>
+              <li>
+                The 1st number tells you how many letters you got correct, the
+                2nd number shows how many letters are in the right position.
+              </li>
+            </ul>
             <br />
             <button
               type="button"
