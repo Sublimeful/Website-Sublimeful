@@ -5,15 +5,28 @@ import Keyboard from "./ui/Keyboard";
 import wordlist from "./wordlist";
 import styles from "./styles.module.css";
 import { shuffleArrayWithSeed } from "./random";
+import usePersistentState from "@/app/hooks/usePersistentState";
+
+const dayInMs = 1000 * 60 * 60 * 24;
 
 export default function Page() {
-  const [guessHistory, setGuessHistory] = useState<Array<string>>([]);
+  const [guessHistory, setGuessHistory] = usePersistentState<Array<string>>(
+    "wordscope::guessHistory",
+    [],
+  );
   const [guess, setGuess] = useState<string>("");
+  const [instructionsVisible, setInstructionsVisible] = useState(false);
+  const [winVisible, setWinVisible] = useState(false);
+  const [state, setState] = useState<"idle" | "in progress" | "completed">(
+    "idle",
+  );
   const todaysWord = getTodaysWord();
   const guessHistoryRef = useRef<HTMLDivElement>(null);
   const guessFeedbackRef = useRef<HTMLDivElement>(null);
 
   function getGuessFeedback(guess: string) {
+    if (!guess || guess.length !== todaysWord.length) return;
+
     const todaysWordCounter = {};
     const guessCounter = {};
 
@@ -40,7 +53,6 @@ export default function Page() {
   }
 
   function getTodaysWord(dayOffset: number = 0) {
-    const dayInMs = 1000 * 60 * 60 * 24;
     const currentDay = Math.floor(Date.now() / dayInMs) + dayOffset;
     const currentRotation = Math.floor(currentDay / wordlist.length);
     const arrayOfIndices = [...wordlist.keys()];
@@ -56,12 +68,21 @@ export default function Page() {
   }
 
   useEffect(() => {
+    // Don't do anything if game is not in progress
+    if (state !== "in progress") return;
+
     function onKeyDown(event: KeyboardEvent) {
       const key = event.key;
       switch (key) {
         case "Backspace":
           setGuess((prevGuess) => prevGuess.slice(0, -1));
           break;
+      }
+    }
+
+    function onKeyPress(event: KeyboardEvent) {
+      const key = event.key;
+      switch (key) {
         case "Enter":
           submitGuess();
           break;
@@ -76,9 +97,14 @@ export default function Page() {
     }
 
     addEventListener("keydown", onKeyDown);
-    return () => removeEventListener("keydown", onKeyDown);
-  });
+    addEventListener("keypress", onKeyPress);
+    return () => {
+      removeEventListener("keydown", onKeyDown);
+      removeEventListener("keypress", onKeyPress);
+    };
+  }, [instructionsVisible, state, guess]);
 
+  // Sync up scrolling for guess history and feedback
   useEffect(() => {
     function syncScroll(ev: Event) {
       if (ev.currentTarget === guessHistoryRef.current) {
@@ -96,9 +122,91 @@ export default function Page() {
     };
   }, []);
 
+  // Check if user has completed the game
+  useEffect(() => {
+    // Don't do anything if game is not in progress
+    if (state !== "in progress") return;
+
+    const lastGuess = guessHistory[guessHistory.length - 1];
+    const lastGuessFeedback = getGuessFeedback(lastGuess);
+    if (lastGuessFeedback && lastGuessFeedback[1] === 5) {
+      setState("completed");
+      setWinVisible(true);
+    }
+  }, [instructionsVisible, state, guessHistory]);
+
+  useEffect(() => {
+    const today = Math.floor(Date.now() / dayInMs);
+    const lastDayOnline =
+      JSON.parse(localStorage.getItem("wordscope::lastDayOnline")) ?? 0;
+    const guessHistory =
+      JSON.parse(localStorage.getItem("wordscope::guessHistory")) ?? [];
+    if (lastDayOnline !== today) {
+      localStorage.setItem("wordscope::lastDayOnline", JSON.stringify(today));
+      setGuessHistory([]);
+      setInstructionsVisible(true);
+    } else if (guessHistory.length === 0) {
+      setInstructionsVisible(true);
+    } else {
+      setState("in progress");
+    }
+  }, []);
+
   return (
-    <main className="p-4 border-t-1">
-      <div className="mb-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[12rem_2px_12rem] place-items-center">
+    <main className="border-t-1">
+      {/* Victory popup */}
+      {winVisible && (
+        <div className="fixed z-40 w-full h-full bg-[rgb(0,0,0,.8)]">
+          <div className="fixed z-40 py-4 px-8 w-full sm:w-1/2 lg:w-96 h-max top-1/2 left-1/2 -translate-1/2 bg-white dark:bg-black border-2 overflow-y-scroll">
+            <h1 className="text-center font-bold text-3xl">Amazing!</h1>
+            <p>
+              <br />
+              You got the secret word in {guessHistory.length}{" "}
+              guesses! Come back tomorrow for a new word.
+            </p>
+            <br />
+            <button
+              type="button"
+              onClick={() => setWinVisible(false)}
+              className="cursor-pointer border-1 rounded-xl p-2"
+            >
+              See my guesses
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Instructions popup */}
+      {instructionsVisible && (
+        <div className="fixed z-40 w-full h-full bg-[rgb(0,0,0,.8)]">
+          <div className="fixed z-40 py-4 px-8 w-full sm:w-3/4 md:w-1/2 h-1/2 md:h-max top-1/2 left-1/2 -translate-1/2 bg-white dark:bg-black border-2 overflow-y-scroll">
+            <h1 className="text-center font-bold text-3xl">WordScope</h1>
+            <h2 className="font-bold text-2xl">
+              <br />
+              How to play?
+            </h2>
+            <p>
+              - Find the secret word. You have unlimited guesses.
+              <br />- Whenever you guess, you are given feedback in the form of
+              2 numbers.
+              <br />{" "}
+              - The 1st number tells you how many letters you got correct, the
+              2nd number shows how many letters are in the right position.
+            </p>
+            <br />
+            <button
+              type="button"
+              onClick={() => {
+                setState("in progress");
+                setInstructionsVisible(false);
+              }}
+              className="cursor-pointer border-1 rounded-xl p-2"
+            >
+              OK I got it shut up
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[12rem_2px_12rem] place-items-center">
         {/* Guess */}
         <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
           {guess
@@ -149,11 +257,14 @@ export default function Page() {
           })}
         </div>
         {/* Divider */}
-        <div className="row-start-1 col-start-2 row-span-2 w-full h-full bg-black">
+        <div className="row-start-1 col-start-2 row-span-2 w-full h-full bg-black dark:bg-white">
         </div>
       </div>
       <Keyboard
         onKeyPress={(key: string) => {
+          // Don't do anything if game is not in progress
+          if (state !== "in progress") return;
+
           switch (key) {
             case "Backspace":
               setGuess((prevGuess) => prevGuess.slice(0, -1));

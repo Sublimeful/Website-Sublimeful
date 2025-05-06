@@ -6,18 +6,18 @@ export default function usePersistentState<T>(
 ): [T, (value: T) => void] {
   const [state, setInternalState] = useState<T>(initialValue);
 
-  useEffect(() => {
-    const value = localStorage.getItem(key);
-
-    if (!value) return;
-
-    setInternalState(JSON.parse(value));
-  }, [key]);
-
   const setState = (value: T) => {
     localStorage.setItem(key, JSON.stringify(value));
     setInternalState(value);
   };
+
+  // Set state to localStorage value
+  useEffect(() => {
+    const value = localStorage.getItem(key);
+    if (value) {
+      setInternalState(JSON.parse(value));
+    }
+  }, []);
 
   return [state, setState];
 }

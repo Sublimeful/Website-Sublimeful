@@ -104,7 +104,7 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
 
   return (
     <div
-      className="fixed w-[32px] h-[32px] pointer-events-none pixelate bg-[url('/dog.png')]"
+      className="fixed z-50 w-[32px] h-[32px] pointer-events-none pixelate bg-[url('/dog.png')]"
       style={{
         top: `${dogPos.y}px`,
         left: `${dogPos.x}px`,
