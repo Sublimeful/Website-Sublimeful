@@ -3,10 +3,22 @@
 import { useEffect, useState } from "react";
 import Keyboard from "./ui/Keyboard";
 import wordlist from "./wordlist";
+import styles from "./styles.module.css";
+import { shuffleArrayWithSeed } from "./random";
 
 export default function Page() {
   const [guessHistory, setGuessHistory] = useState<Array<string>>([]);
   const [guess, setGuess] = useState<string>("");
+  const todaysWord = getTodaysWord();
+
+  function getTodaysWord(dayOffset: number = 0) {
+    const dayInMs = 1000 * 60 * 60 * 24;
+    const currentDay = Math.floor(Date.now() / dayInMs) + dayOffset;
+    const currentRotation = Math.floor(currentDay / wordlist.length);
+    const arrayOfIndices = [...wordlist.keys()];
+    shuffleArrayWithSeed(arrayOfIndices, currentRotation);
+    return wordlist[arrayOfIndices[Math.abs(currentDay % wordlist.length)]];
+  }
 
   function submitGuess() {
     if (guessHistory.includes(guess) || !wordlist.includes(guess)) return;
@@ -55,16 +67,27 @@ export default function Page() {
             ))}
         </div>
         {/* Guess History */}
-        <div className="row-start-2 col-start-1 flex flex-col">
-          {guessHistory.map((word, wordIndex) => (
-            <div key={wordIndex} className="flex flex-row gap-x-4">
-              {word.split("").map((letter, letterIndex) => (
-                <div key={letterIndex} className="w-4 h-8 text-center">
-                  {letter.toUpperCase()}
-                </div>
-              ))}
-            </div>
-          ))}
+        <div
+          className={`${styles["guess-history"]} w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
+        >
+          <div className="scale-x-[-1] w-full grid place-items-center">
+            {guessHistory.map((word, wordIndex) => (
+              <div key={wordIndex} className="flex flex-row gap-x-4">
+                {word.split("").map((letter, letterIndex) => (
+                  <div key={letterIndex} className="w-4 h-8 text-center">
+                    {letter.toUpperCase()}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Guess Feedback */}
+        <div className="row-start-2 col-start-3 w-full h-64 pl-6 overflow-y-scroll flex flex-col">
+          <div className="flex flex-row gap-x-4">
+            <h1>100</h1>
+            <h1>2</h1>
+          </div>
         </div>
         {/* Divider */}
         <div className="row-start-1 col-start-2 row-span-2 w-full h-full bg-black"></div>
