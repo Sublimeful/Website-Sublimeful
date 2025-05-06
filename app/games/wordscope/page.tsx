@@ -17,6 +17,7 @@ export default function Page() {
   const [guess, setGuess] = useState<string>("");
   const [instructionsVisible, setInstructionsVisible] = useState(false);
   const [winVisible, setWinVisible] = useState(false);
+  const [smoothScrolling, setSmoothScrolling] = useState(false);
   const [state, setState] = useState<"idle" | "in progress" | "completed">(
     "idle",
   );
@@ -106,6 +107,8 @@ export default function Page() {
 
   // Sync up scrolling for guess history and feedback
   useEffect(() => {
+    if (smoothScrolling) return;
+
     function syncScroll(ev: Event) {
       if (ev.currentTarget === guessHistoryRef.current) {
         guessFeedbackRef.current.scrollTop = guessHistoryRef.current.scrollTop;
@@ -120,7 +123,7 @@ export default function Page() {
       guessHistoryRef.current.removeEventListener("scroll", syncScroll);
       guessFeedbackRef.current.removeEventListener("scroll", syncScroll);
     };
-  }, []);
+  }, [smoothScrolling]);
 
   // Check if user has completed the game
   useEffect(() => {
@@ -134,6 +137,23 @@ export default function Page() {
       setWinVisible(true);
     }
   }, [instructionsVisible, state, guessHistory]);
+
+  // Auto scroll guess history when user guesses
+  useEffect(() => {
+    const guessesElements =
+      guessHistoryRef.current.querySelector("div").children;
+    const feedbackElements = guessFeedbackRef.current.children;
+    const lastGuessElement = guessesElements[guessesElements.length - 1];
+    const lastFeedbackElement = feedbackElements[feedbackElements.length - 1];
+    if (!lastGuessElement || !lastFeedbackElement) return;
+    setSmoothScrolling(true);
+    lastGuessElement.scrollIntoView({ behavior: "smooth", block: "end" });
+    lastFeedbackElement.scrollIntoView({ behavior: "smooth", block: "end" });
+    guessHistoryRef.current.onscrollend = () => {
+      setSmoothScrolling(false);
+      guessHistoryRef.current.onscrollend = null;
+    };
+  }, [guessHistory]);
 
   useEffect(() => {
     const today = Math.floor(Date.now() / dayInMs);
