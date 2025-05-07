@@ -267,9 +267,9 @@ export default function Page() {
           </div>
         </div>
       )}
-      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[13rem_2px_13rem] place-items-center">
+      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[13rem_2px_13rem] place-items-end">
         {/* Guess */}
-        <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
+        <div className="row-start-1 col-start-1 flex flex-row gap-x-4 mr-12">
           {guess
             .padEnd(todaysWord.length, " ")
             .slice(0, todaysWord.length)
@@ -283,11 +283,9 @@ export default function Page() {
         {/* Guess History */}
         <div
           ref={guessHistoryRef}
-          className={`${
-            styles["guess-history"]
-          } w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
+          className="w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col mr-12"
         >
-          <div className="scale-x-[-1] w-full grid place-items-center">
+          <div className="scale-x-[-1] w-full grid place-items-end">
             {guessHistory.map((guess, guessIndex) => (
               <div key={guessIndex} className="flex flex-row gap-x-4">
                 {guess.split("").map((letter, letterIndex) => (
@@ -300,7 +298,7 @@ export default function Page() {
           </div>
         </div>
         {/* Guess Feedback Legend */}
-        <div className="row-start-1 col-start-3 w-full flex flex-row pl-12 gap-12">
+        <div className="row-start-1 col-start-3 w-full flex flex-row pl-[2.33rem] gap-12">
           <div className="w-8 h-8 bg-yellow-500 rounded-lg" />
           <div className="w-8 h-8 bg-green-500 rounded-lg" />
         </div>
@@ -317,9 +315,9 @@ export default function Page() {
             if (!feedback) return null;
 
             return (
-              <div key={guessIndex} className="flex flex-row pl-12 gap-12">
-                <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
-                <h1 className="w-8 h-8 text-center">{feedback[1]}</h1>
+              <div key={guessIndex} className="flex flex-row ml-12 gap-12">
+                <h1 className="w-8 h-8">{feedback[0]}</h1>
+                <h1 className="w-8 h-8">{feedback[1]}</h1>
               </div>
             );
           })}
