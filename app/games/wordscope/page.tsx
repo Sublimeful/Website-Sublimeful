@@ -267,9 +267,9 @@ export default function Page() {
           </div>
         </div>
       )}
-      <div className="my-4 m-auto w-min text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[13rem_2px_13rem] place-items-end">
+      <div className="my-4 m-auto w-full md:w-xl text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[1fr_2px_1fr] place-items-center justify-around">
         {/* Guess */}
-        <div className="row-start-1 col-start-1 flex flex-row gap-x-4 mr-12">
+        <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
           {guess
             .padEnd(todaysWord.length, " ")
             .slice(0, todaysWord.length)
@@ -283,9 +283,11 @@ export default function Page() {
         {/* Guess History */}
         <div
           ref={guessHistoryRef}
-          className="w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col mr-12"
+          className={`${
+            styles["guess-history"]
+          } w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
         >
-          <div className="scale-x-[-1] w-full grid place-items-end">
+          <div className="scale-x-[-1] w-full grid place-items-center">
             {guessHistory.map((guess, guessIndex) => (
               <div key={guessIndex} className="flex flex-row gap-x-4">
                 {guess.split("").map((letter, letterIndex) => (
@@ -298,7 +300,7 @@ export default function Page() {
           </div>
         </div>
         {/* Guess Feedback Legend */}
-        <div className="row-start-1 col-start-3 w-full flex flex-row pl-[2.33rem] gap-12">
+        <div className="row-start-1 col-start-3 flex flex-row w-full justify-evenly">
           <div className="w-8 h-8 bg-yellow-500 rounded-lg" />
           <div className="w-8 h-8 bg-green-500 rounded-lg" />
         </div>
@@ -307,7 +309,7 @@ export default function Page() {
           ref={guessFeedbackRef}
           className={`${
             styles["guess-feedback"]
-          } row-start-2 col-start-3 w-full h-64 overflow-y-scroll flex flex-col`}
+          } row-start-2 col-start-3 w-full h-64 overflow-y-scroll flex flex-col items-center`}
         >
           {guessHistory.map((guess, guessIndex) => {
             const feedback = getGuessFeedback(guess);
@@ -315,9 +317,12 @@ export default function Page() {
             if (!feedback) return null;
 
             return (
-              <div key={guessIndex} className="flex flex-row ml-12 gap-12">
-                <h1 className="w-8 h-8">{feedback[0]}</h1>
-                <h1 className="w-8 h-8">{feedback[1]}</h1>
+              <div
+                key={guessIndex}
+                className="flex flex-row w-full justify-evenly"
+              >
+                <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
+                <h1 className="w-8 h-8 text-center">{feedback[1]}</h1>
               </div>
             );
           })}
@@ -345,7 +350,7 @@ export default function Page() {
               break;
           }
         }}
-        className="m-auto w-[calc(100%-0.5rem)] md:w-xl h-56"
+        className="m-auto w-[calc(100%-1rem)] md:w-xl h-56"
       />
     </main>
   );
