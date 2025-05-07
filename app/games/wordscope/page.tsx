@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Keyboard from "./ui/Keyboard";
+import validWordlist from "./validWordlist";
 import wordlist from "./wordlist";
 import styles from "./styles.module.css";
 import { shuffleArrayWithSeed } from "./random";
@@ -14,6 +15,7 @@ export default function Page() {
     "wordscope::guessHistory",
     [],
   );
+  const [notifications, setNotifications] = useState<Array<string>>([]);
   const [guess, setGuess] = useState<string>("");
   const [instructionsVisible, setInstructionsVisible] = useState(false);
   const [winVisible, setWinVisible] = useState(false);
@@ -62,7 +64,33 @@ export default function Page() {
   }
 
   function submitGuess() {
-    if (guessHistory.includes(guess) || !wordlist.includes(guess)) return;
+    if (guess.length !== todaysWord.length) {
+      setNotifications([...notifications, "Not enough letters"]);
+      setTimeout(
+        () =>
+          setNotifications((prevNotifications) => prevNotifications.slice(1)),
+        1000,
+      );
+      return;
+    }
+    if (guessHistory.includes(guess)) {
+      setNotifications([...notifications, "Already guessed this word"]);
+      setTimeout(
+        () =>
+          setNotifications((prevNotifications) => prevNotifications.slice(1)),
+        1000,
+      );
+      return;
+    }
+    if (!validWordlist.includes(guess)) {
+      setNotifications([...notifications, "Not in word list"]);
+      setTimeout(
+        () =>
+          setNotifications((prevNotifications) => prevNotifications.slice(1)),
+        1000,
+      );
+      return;
+    }
     setGuessHistory([...guessHistory, guess]);
     // Clear guess input
     setGuess("");
@@ -90,7 +118,7 @@ export default function Page() {
         default:
           if (key.match(/^[A-Z]$/i)) {
             setGuess((prevGuess) =>
-              (prevGuess + key.toLowerCase()).slice(0, 5)
+              (prevGuess + key.toLowerCase()).slice(0, todaysWord.length)
             );
           }
           break;
@@ -103,7 +131,7 @@ export default function Page() {
       removeEventListener("keydown", onKeyDown);
       removeEventListener("keypress", onKeyPress);
     };
-  }, [instructionsVisible, state, guess]);
+  }, [instructionsVisible, state, guess, notifications]);
 
   // Sync up scrolling for guess history and feedback
   useEffect(() => {
@@ -132,7 +160,7 @@ export default function Page() {
 
     const lastGuess = guessHistory[guessHistory.length - 1];
     const lastGuessFeedback = getGuessFeedback(lastGuess);
-    if (lastGuessFeedback && lastGuessFeedback[1] === 5) {
+    if (lastGuessFeedback && lastGuessFeedback[1] === todaysWord.length) {
       setState("completed");
       setWinVisible(true);
     }
@@ -174,6 +202,18 @@ export default function Page() {
 
   return (
     <main className="border-t-1">
+      {/* Notifications popup */}
+      {notifications.map((content, index) => {
+        return (
+          <div
+            key={index}
+            className="fixed z-40 left-1/2 -translate-1/2 bg-white dark:bg-black w-56 h-max border-1 text-center"
+            style={{ transform: `translate(0, ${140 * (index + 1)}%)` }}
+          >
+            {content}
+          </div>
+        );
+      })}
       {/* Victory popup */}
       {winVisible && (
         <div className="fixed z-40 w-full h-full bg-[rgb(0,0,0,.8)]">
@@ -231,8 +271,8 @@ export default function Page() {
         {/* Guess */}
         <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
           {guess
-            .padEnd(5, " ")
-            .slice(0, 5)
+            .padEnd(todaysWord.length, " ")
+            .slice(0, todaysWord.length)
             .split("")
             .map((letter, index) => (
               <div key={index} className="w-4 h-8 border-b-2 text-center">
@@ -274,6 +314,8 @@ export default function Page() {
           {guessHistory.map((guess, guessIndex) => {
             const feedback = getGuessFeedback(guess);
 
+            if (!feedback) return null;
+
             return (
               <div key={guessIndex} className="flex flex-row pl-12 gap-12">
                 <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
@@ -300,7 +342,7 @@ export default function Page() {
               break;
             default:
               setGuess((prevGuess) =>
-                (prevGuess + key.toLowerCase()).slice(0, 5)
+                (prevGuess + key.toLowerCase()).slice(0, todaysWord.length)
               );
               break;
           }
