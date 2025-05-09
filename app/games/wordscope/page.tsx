@@ -350,7 +350,7 @@ export default function Page() {
               break;
           }
         }}
-        className="m-auto w-[calc(100%-1rem)] md:w-xl h-56"
+        className="my-4 m-auto w-[calc(100%-1rem)] md:w-xl h-56"
       />
     </main>
   );
