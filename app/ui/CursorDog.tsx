@@ -19,6 +19,7 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
   const dogState = useRef<"idle" | "walking">("idle");
   // Frame -3 = sitting, Frames 0 to -2 = walking
   const [frame, setFrame] = useState(0);
+  const [prevFrameTime, setPrevFrameTime] = useState(0);
 
   function getDist(
     vectorA: { x: number; y: number },
@@ -85,7 +86,10 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
         break;
       case "walking":
         if (frame === -3) setFrame(0);
-        else if (Math.trunc(time * 1000) % 500 === 0) setFrame((frame - 1) % 3);
+        else if (time - prevFrameTime > 75) {
+          setPrevFrameTime(time);
+          setFrame((frame - 1) % 3);
+        }
         break;
     }
   }
