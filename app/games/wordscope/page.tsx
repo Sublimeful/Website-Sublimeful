@@ -238,7 +238,7 @@ export default function Page() {
             <h1 className="text-center font-bold text-3xl">Amazing!</h1>
             <br />
             <p>
-              You got the secret word in {guessHistory.length}{" "}
+              You found the secret word in {guessHistory.length}{" "}
               guesses! Come back tomorrow for a new word.
             </p>
             <br />
