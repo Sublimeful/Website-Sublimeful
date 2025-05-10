@@ -37,12 +37,12 @@ export default function Page() {
     let rightPositions = 0;
 
     for (let i = 0; i < todaysWord.length; i++) {
-      if (guess[i] == todaysWord[i]) {
+      if (guess[i] === todaysWord[i]) {
         rightPositions++;
       }
-      todaysWordCounter[todaysWord[i]] = todaysWordCounter[todaysWord[i]] ??
-        0 + 1;
-      guessCounter[guess[i]] = guessCounter[guess[i]] ?? 0 + 1;
+      todaysWordCounter[todaysWord[i]] = (todaysWordCounter[todaysWord[i]] ??
+        0) + 1;
+      guessCounter[guess[i]] = (guessCounter[guess[i]] ?? 0) + 1;
     }
 
     for (const letter of Object.keys(todaysWordCounter)) {
