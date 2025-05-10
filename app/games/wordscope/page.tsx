@@ -40,8 +40,8 @@ export default function Page() {
       if (guess[i] === todaysWord[i]) {
         rightPositions++;
       }
-      todaysWordCounter[todaysWord[i]] = (todaysWordCounter[todaysWord[i]] ??
-        0) + 1;
+      todaysWordCounter[todaysWord[i]] =
+        (todaysWordCounter[todaysWord[i]] ?? 0) + 1;
       guessCounter[guess[i]] = (guessCounter[guess[i]] ?? 0) + 1;
     }
 
