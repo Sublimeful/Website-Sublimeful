@@ -292,13 +292,16 @@ export default function Page() {
       )}
       <div className="my-4 m-auto w-full md:w-xl text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[1fr_2px_1fr] place-items-center justify-around">
         {/* Guess */}
-        <div className="row-start-1 col-start-1 flex flex-row gap-x-4">
+        <div className="row-start-1 col-start-1 flex flex-row gap-x-2">
           {guess
             .padEnd(todaysWord.length, " ")
             .slice(0, todaysWord.length)
             .split("")
             .map((letter, index) => (
-              <div key={index} className="w-4 h-8 border-b-2 text-center">
+              <div
+                key={index}
+                className="relative w-8 h-8 text-center before:content-[''] before:absolute before:w-4 before:h-8 before:left-1/4 before:border-b-2"
+              >
                 {letter.toUpperCase()}
               </div>
             ))}
@@ -312,7 +315,7 @@ export default function Page() {
         >
           <div className="scale-x-[-1] w-full flex flex-col items-center">
             {guessHistory.map((guess, guessIndex) => (
-              <div key={guessIndex} className="flex flex-row gap-x-4">
+              <div key={guessIndex} className="flex flex-row gap-x-2">
                 {guess.split("").map((letter, letterIndex) => (
                   <div
                     key={letterIndex}
@@ -331,19 +334,19 @@ export default function Page() {
                         ]);
                       }
                     }}
-                    className="w-4 h-8 cursor-pointer"
+                    className="w-8 h-8 cursor-pointer"
                   >
-                    {crossedOutLetters.includes(letter.toUpperCase()) && (
-                      <div className="absolute w-4 h-8 grid place-items-center">
-                        <svg width="16" height="16">
-                          <path
-                            stroke="red"
-                            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                    <h1 className="w-4 h-8 text-center select-none">
+                    <h1 className="relative w-8 h-8 text-center select-none">
+                      {crossedOutLetters.includes(letter.toUpperCase()) && (
+                        <div className="absolute top-1/4 left-1/4 scale-150">
+                          <svg width="16" height="16">
+                            <path
+                              stroke="red"
+                              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
+                            />
+                          </svg>
+                        </div>
+                      )}
                       {letter.toUpperCase()}
                     </h1>
                   </div>
