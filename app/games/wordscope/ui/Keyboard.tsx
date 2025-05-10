@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, RefObject } from "react";
 
 interface KeyProps {
   onClick: MouseEventHandler<HTMLButtonElement>;
@@ -12,7 +12,7 @@ function Key({ onClick, children, title, className }: KeyProps) {
       type="button"
       onClick={onClick}
       title={title}
-      className={`col-span-2 cursor-pointer rounded-md bg-gray-300 dark:bg-gray-600 ${className}`}
+      className={`col-span-2 cursor-pointer select-none rounded-md bg-gray-300 dark:bg-gray-600 ${className}`}
     >
       {children}
     </button>
@@ -22,11 +22,19 @@ function Key({ onClick, children, title, className }: KeyProps) {
 interface KeyboardProps {
   onKeyPress(key: string): void;
   className?: string;
+  ref?: RefObject<HTMLDivElement>;
 }
 
-export default function Keyboard({ onKeyPress, className }: KeyboardProps) {
+export default function Keyboard({
+  onKeyPress,
+  className,
+  ref,
+}: KeyboardProps) {
   return (
-    <div className={`grid grid-cols-20 grid-rows-3 gap-1 ${className}`}>
+    <div
+      ref={ref}
+      className={`grid grid-cols-20 grid-rows-3 gap-1 ${className}`}
+    >
       <Key onClick={() => onKeyPress("q")}>Q</Key>
       <Key onClick={() => onKeyPress("w")}>W</Key>
       <Key onClick={() => onKeyPress("e")}>E</Key>

@@ -11,12 +11,15 @@ import usePersistentState from "@/app/hooks/usePersistentState";
 const dayInMs = 1000 * 60 * 60 * 24;
 
 export default function Page() {
+  const [guess, setGuess] = useState<string>("");
   const [guessHistory, setGuessHistory] = usePersistentState<Array<string>>(
     "wordscope::guessHistory",
     [],
   );
+  const [crossedOutLetters, setCrossedOutLetters] = usePersistentState<
+    Array<string>
+  >("wordscope::crossedOutLetters", []);
   const [notifications, setNotifications] = useState<Array<string>>([]);
-  const [guess, setGuess] = useState<string>("");
   const [instructionsVisible, setInstructionsVisible] = useState(false);
   const [winVisible, setWinVisible] = useState(false);
   const [smoothScrolling, setSmoothScrolling] = useState(false);
@@ -26,6 +29,7 @@ export default function Page() {
   const todaysWord = getTodaysWord();
   const guessHistoryRef = useRef<HTMLDivElement>(null);
   const guessFeedbackRef = useRef<HTMLDivElement>(null);
+  const keyboardRef = useRef<HTMLDivElement>(null);
 
   function getGuessFeedback(guess: string) {
     if (!guess || guess.length !== todaysWord.length) return;
@@ -192,6 +196,7 @@ export default function Page() {
     if (lastDayOnline !== today) {
       localStorage.setItem("wordscope::lastDayOnline", JSON.stringify(today));
       setGuessHistory([]);
+      setCrossedOutLetters([]);
       setInstructionsVisible(true);
     } else if (guessHistory.length === 0) {
       setInstructionsVisible(true);
@@ -199,6 +204,18 @@ export default function Page() {
       setState("in progress");
     }
   }, []);
+
+  useEffect(() => {
+    if (!keyboardRef.current) return;
+
+    for (const key of keyboardRef.current.querySelectorAll("button")) {
+      if (crossedOutLetters.includes(key.textContent)) {
+        key.style.filter = "brightness(0.6)";
+      } else {
+        key.style.filter = "";
+      }
+    }
+  }, [crossedOutLetters]);
 
   return (
     <main className="border-t-1">
@@ -249,8 +266,14 @@ export default function Page() {
                 numbers.
               </li>
               <li>
-                The 1st number tells you how many letters you got correct, the
-                2nd number tells you how many letters are in the right position.
+                The 1st number tells you how many letters you got correct
+                (including duplicate letters), the 2nd number tells you how many
+                letters are in the correct position.
+              </li>
+              <li>
+                You can also click on each letter in the guess history to cross
+                it out. This can be helpful for eliminating letters you know are
+                not in the secret word.
               </li>
             </ul>
             <br />
@@ -285,14 +308,44 @@ export default function Page() {
           ref={guessHistoryRef}
           className={`${
             styles["guess-history"]
-          } w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll flex flex-col`}
+          } w-full scale-x-[-1] row-start-2 col-start-1 h-64 overflow-y-scroll`}
         >
-          <div className="scale-x-[-1] w-full grid place-items-center">
+          <div className="scale-x-[-1] w-full flex flex-col items-center">
             {guessHistory.map((guess, guessIndex) => (
               <div key={guessIndex} className="flex flex-row gap-x-4">
                 {guess.split("").map((letter, letterIndex) => (
-                  <div key={letterIndex} className="w-4 h-8 text-center">
-                    {letter.toUpperCase()}
+                  <div
+                    key={letterIndex}
+                    onClick={() => {
+                      const letterUpperCase = letter.toUpperCase();
+                      if (crossedOutLetters.includes(letterUpperCase)) {
+                        setCrossedOutLetters(
+                          crossedOutLetters.filter(
+                            (l) => l !== letterUpperCase,
+                          ),
+                        );
+                      } else {
+                        setCrossedOutLetters([
+                          ...crossedOutLetters,
+                          letterUpperCase,
+                        ]);
+                      }
+                    }}
+                    className="w-4 h-8 cursor-pointer"
+                  >
+                    {crossedOutLetters.includes(letter.toUpperCase()) && (
+                      <div className="absolute w-4 h-8 grid place-items-center">
+                        <svg width="16" height="16">
+                          <path
+                            stroke="red"
+                            d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                    <h1 className="w-4 h-8 text-center select-none">
+                      {letter.toUpperCase()}
+                    </h1>
                   </div>
                 ))}
               </div>
@@ -321,8 +374,12 @@ export default function Page() {
                 key={guessIndex}
                 className="flex flex-row w-full justify-evenly"
               >
-                <h1 className="w-8 h-8 text-center">{feedback[0]}</h1>
-                <h1 className="w-8 h-8 text-center">{feedback[1]}</h1>
+                <h1 className="w-8 h-8 text-center select-none">
+                  {feedback[0]}
+                </h1>
+                <h1 className="w-8 h-8 text-center select-none">
+                  {feedback[1]}
+                </h1>
               </div>
             );
           })}
@@ -332,6 +389,7 @@ export default function Page() {
         </div>
       </div>
       <Keyboard
+        ref={keyboardRef}
         onKeyPress={(key: string) => {
           // Don't do anything if game is not in progress
           if (state !== "in progress") return;
