@@ -338,7 +338,9 @@ export default function Page() {
                   >
                     <h1 className="relative w-8 h-8 text-center select-none">
                       {crossedOutLetters.includes(letter.toUpperCase()) && (
-                        <div className="absolute w-full h-full [mask-image:url(/x-lg.svg)] [mask-size:cover] bg-red-500" />
+                        <div className="absolute w-full h-full -top-2.5 text-red-600 font-semibold text-4xl pointer-events-none">
+                          x
+                        </div>
                       )}
                       {letter.toUpperCase()}
                     </h1>
