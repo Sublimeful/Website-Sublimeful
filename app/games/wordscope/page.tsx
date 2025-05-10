@@ -300,7 +300,7 @@ export default function Page() {
             .map((letter, index) => (
               <div
                 key={index}
-                className="relative w-8 h-8 text-center before:content-[''] before:absolute before:w-4 before:h-8 before:left-1/4 before:border-b-2"
+                className="relative w-8 h-8 text-center select-none before:content-[''] before:absolute before:w-4 before:h-8 before:left-1/4 before:border-b-2"
               >
                 {letter.toUpperCase()}
               </div>
