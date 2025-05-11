@@ -290,9 +290,9 @@ export default function Page() {
           </div>
         </div>
       )}
-      <div className="my-4 m-auto w-full md:w-xl text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[1fr_2px_1fr] place-items-center justify-around">
+      <div className="my-4 m-auto w-full md:w-xl text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[1fr_2px_1fr] place-items-center">
         {/* Guess */}
-        <div className="row-start-1 col-start-1 flex flex-row gap-x-2">
+        <div className="row-start-1 col-start-1 flex flex-row">
           {guess
             .padEnd(todaysWord.length, " ")
             .slice(0, todaysWord.length)
@@ -315,7 +315,7 @@ export default function Page() {
         >
           <div className="scale-x-[-1] w-full flex flex-col items-center">
             {guessHistory.map((guess, guessIndex) => (
-              <div key={guessIndex} className="flex flex-row gap-x-2">
+              <div key={guessIndex} className="flex flex-row">
                 {guess.split("").map((letter, letterIndex) => (
                   <div
                     key={letterIndex}
@@ -338,7 +338,7 @@ export default function Page() {
                   >
                     <h1 className="relative w-8 h-8 text-center select-none">
                       {crossedOutLetters.includes(letter.toUpperCase()) && (
-                        <div className="absolute w-full h-full -top-2.5 text-red-600 font-semibold text-4xl pointer-events-none">
+                        <div className="absolute w-full h-full -top-[0.65rem] text-red-600 font-semibold text-4xl pointer-events-none">
                           x
                         </div>
                       )}
