@@ -1,5 +1,9 @@
 import Game from "../Game";
 
 export default function Page() {
-  return <Game mode="daily" />;
+  return (
+    <main className="border-t-1">
+      <Game mode="daily" />
+    </main>
+  );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Keyboard from "./ui/Keyboard";
 import validWordlist from "./validWordlist";
@@ -20,6 +21,7 @@ export default function Game({ mode }: GameProps) {
   const [crossedOutLetters, setCrossedOutLetters] = useState<Array<string>>([]);
   const [notifications, setNotifications] = useState<Array<string>>([]);
   const [instructionsVisible, setInstructionsVisible] = useState(false);
+  const [instructionsSeen, setInstructionsSeen] = useState(false);
   const [winVisible, setWinVisible] = useState(false);
   const [smoothScrolling, setSmoothScrolling] = useState(false);
   const [state, setState] = useState<"idle" | "in progress" | "completed">(
@@ -28,6 +30,7 @@ export default function Game({ mode }: GameProps) {
   const [wordId, setWordId] = useState(Math.floor(Date.now() / dayInMs));
   const secretWord = getWord(wordId * (mode === "daily" ? 1 : -1));
   const gameId = `${mode}::${wordId}`;
+  const wordIdInputRef = useRef<HTMLInputElement>(null);
   const guessHistoryRef = useRef<HTMLDivElement>(null);
   const guessFeedbackRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
@@ -201,7 +204,11 @@ export default function Game({ mode }: GameProps) {
     }
     const guessHistory = games[gameId].guessHistory;
     const crossedOutLetters = games[gameId].crossedOutLetters;
-    if (guessHistory.length === 0 && crossedOutLetters.length === 0) {
+    if (
+      !instructionsSeen && guessHistory.length === 0 &&
+      crossedOutLetters.length === 0
+    ) {
+      setInstructionsSeen(true);
       setInstructionsVisible(true);
     } else {
       // Set game state
@@ -214,6 +221,7 @@ export default function Game({ mode }: GameProps) {
 
   // <{{ Update local storage when the guessHistory or crossedOutLetters states change
   useEffect(() => {
+    if (guessHistory.length === 0 && crossedOutLetters.length === 0) return;
     console.log(guessHistory, crossedOutLetters);
     const games: WordscopeGames =
       JSON.parse(localStorage.getItem("wordscope::games")) ?? {};
@@ -313,6 +321,77 @@ export default function Game({ mode }: GameProps) {
           </div>
         </div>
       )}
+      {(mode === "unlimited") &&
+        (
+          <div className="flex flex-row gap-4 mt-4 w-full justify-center items-center">
+            <button
+              title="Randomize Word Id"
+              type="button"
+              onClick={() => {
+                if (!wordIdInputRef.current) return;
+                const newWordId = Math.floor(
+                  Math.random() * (Number.MAX_SAFE_INTEGER + 1),
+                );
+                setWordId(newWordId);
+                wordIdInputRef.current.value = newWordId.toString();
+              }}
+              className="w-8 h-8 cursor-pointer"
+            >
+              <Image
+                width={32}
+                height={32}
+                className="dark:filter-[invert()]"
+                src="/dice-5-fill.svg"
+                alt="dice-5-fill"
+              />
+            </button>
+            <label>
+              Word Id:{" "}
+              <input
+                ref={wordIdInputRef}
+                onInput={(event) => {
+                  // Disallow negative numbers, don't go over max safe integer
+                  const parsedWordId = Math.min(
+                    Math.abs(parseInt(event.currentTarget.value)),
+                    Number.MAX_SAFE_INTEGER,
+                  );
+                  event.currentTarget.value = parsedWordId.toString();
+                  if (!isNaN(parsedWordId)) {
+                    setWordId(parsedWordId);
+                  }
+                }}
+                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-1 p-1 px-2 w-40 dark:border-white focus:outline-none"
+                title="Word Id"
+                type="number"
+                defaultValue={wordId}
+                min={0}
+                max={Number.MAX_SAFE_INTEGER}
+              />
+            </label>
+            <button
+              title="Next Word Id"
+              type="button"
+              onClick={() => {
+                if (!wordIdInputRef.current) return;
+                const newWordId = Math.min(
+                  wordId + 1,
+                  Number.MAX_SAFE_INTEGER,
+                );
+                setWordId(newWordId);
+                wordIdInputRef.current.value = newWordId.toString();
+              }}
+              className="w-8 h-8 cursor-pointer"
+            >
+              <Image
+                width={32}
+                height={32}
+                className="dark:filter-[invert()]"
+                src="/arrow-right.svg"
+                alt="arrow-right"
+              />
+            </button>
+          </div>
+        )}
       <div className="my-4 m-auto w-full md:w-xl text-xl gap-y-4 grid grid-rows-[repeat(2,min-content)] grid-cols-[1fr_2px_1fr] place-items-center">
         {/* Guess */}
         <div className="row-start-1 col-start-1 flex flex-row">

@@ -6,20 +6,24 @@ import PickerPopup from "./PickerPopup";
 
 export default function Picker({
   children,
+  title,
   className,
 }: {
   children: React.ReactNode;
+  title: string;
   className?: string;
 }) {
   const [showPopup, setShowPopup] = useState(false);
 
-  const pickerRef = useRef<HTMLDivElement>(null);
+  const pickerRef = useRef<HTMLButtonElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function onClick(e: MouseEvent) {
-      if (e.target === pickerRef.current) setShowPopup(!showPopup);
-      else if (showPopup && !popupRef.current.contains(e.target as Node)) {
+      if (
+        showPopup && e.target !== pickerRef.current &&
+        !popupRef.current.contains(e.target as Node)
+      ) {
         setShowPopup(false);
       }
     }
@@ -29,10 +33,15 @@ export default function Picker({
   }, [showPopup]);
 
   return (
-    <div
-      ref={pickerRef}
-      className={`w-8 h-8 rounded-full bg-black dark:bg-white cursor-pointer ${className}`}
-    >
+    <div className="relative">
+      <button
+        ref={pickerRef}
+        type="button"
+        title={title}
+        onClick={() => setShowPopup(!showPopup)}
+        className={`w-8 h-8 rounded-full bg-black dark:bg-white cursor-pointer ${className}`}
+      >
+      </button>
       <PickerPopup ref={popupRef} visible={showPopup}>
         {children}
       </PickerPopup>

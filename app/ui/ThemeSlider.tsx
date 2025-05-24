@@ -15,6 +15,7 @@ export default function ThemeSlider() {
 
   return (
     <Slider
+      title="Theme Slider"
       onClick={(checked) => {
         if (checked) {
           localStorage.setItem("theme", "light");

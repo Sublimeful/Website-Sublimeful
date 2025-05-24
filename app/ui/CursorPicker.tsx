@@ -30,8 +30,12 @@ export default function CursorPicker() {
   }, [imageName]);
 
   return (
-    <Picker className={`bg-[url('/${imageName}.png')] pixelate`}>
+    <Picker
+      title="Cursor Picker"
+      className={`bg-[url('/${imageName}.png')] pixelate`}
+    >
       <PickerItem
+        title="None"
         className="w-[32px] h-[32px] bg-[url('/cursor.png')] pixelate"
         onPick={() => {
           localStorage.setItem("cursor", "none");
@@ -39,6 +43,7 @@ export default function CursorPicker() {
         }}
       />
       <PickerItem
+        title="Dog"
         className="w-[32px] h-[32px] bg-[url('/dog.png')] pixelate"
         onPick={() => {
           localStorage.setItem("cursor", "dog");
