@@ -1,5 +1,5 @@
 export const metadata = {
-  description: "WordScope",
+  description: "Wordscope",
 };
 
 export default function RootLayout({

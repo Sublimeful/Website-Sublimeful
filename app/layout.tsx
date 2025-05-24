@@ -1,6 +1,7 @@
 // These styles apply to every route in the application
 import "@/app/globals.css";
 
+import Link from "next/link";
 import ThemeSlider from "./ui/ThemeSlider";
 import CursorPicker from "./ui/CursorPicker";
 import Cursor from "./ui/Cursor";
@@ -8,6 +9,15 @@ import Cursor from "./ui/Cursor";
 export const metadata = {
   title: "Sublimeful's Website",
   description: "Homepage",
+  icons: {
+    icon: "https://avatars.githubusercontent.com/u/42013583",
+    shortcut: "https://avatars.githubusercontent.com/u/42013583",
+    apple: "https://avatars.githubusercontent.com/u/42013583",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "https://avatars.githubusercontent.com/u/42013583",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -18,11 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-          rel="icon"
-          href="https://avatars.githubusercontent.com/u/42013583"
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -42,13 +47,16 @@ export default function RootLayout({
         {/* Navbar */}
         <div className="flex flex-row flex-wrap gap-x-10 gap-y-4 p-4 items-center">
           <div className="flex flex-row gap-x-4 items-center">
-            <a
+            <Link
               className="w-10 h-10 rounded-full overflow-clip"
               href="https://github.com/Sublimeful"
             >
-              <img src="https://avatars.githubusercontent.com/u/42013583" />
-            </a>
-            <a href="https://github.com/Sublimeful">Sublimeful</a>
+              <img
+                src="https://avatars.githubusercontent.com/u/42013583"
+                alt="Github Profile Picture"
+              />
+            </Link>
+            <Link href="https://github.com/Sublimeful">Sublimeful</Link>
           </div>
           {/* Light/Dark mode toggle */}
           <ThemeSlider />
@@ -56,9 +64,9 @@ export default function RootLayout({
           <CursorPicker />
           {/* Cursor */}
           <Cursor />
-          <a href="/">Homepage</a>
-          <a href="/about">About me</a>
-          <a href="/projects">Projects</a>
+          <Link href="/">Homepage</Link>
+          <Link href="/about">About me</Link>
+          <Link href="/projects">Projects</Link>
         </div>
         {/* Content */}
         {children}

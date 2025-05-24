@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Page() {
   return (
     <main className="border-t-1 p-4">
@@ -6,9 +8,9 @@ export default function Page() {
       <h2 className="font-semibold text-3xl">Games</h2>
       <ul className="font-medium text-xl list-inside list-disc">
         <li>
-          <a className="text-blue-700" href="/games/wordscope">
-            WordScope
-          </a>
+          <Link className="text-blue-700" href="/games/wordscope">
+            Wordscope
+          </Link>
         </li>
       </ul>
     </main>

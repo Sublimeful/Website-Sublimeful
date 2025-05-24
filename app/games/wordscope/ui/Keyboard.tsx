@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { MouseEventHandler, RefObject } from "react";
 
 interface KeyProps {
@@ -6,6 +7,7 @@ interface KeyProps {
   title?: string;
   className?: string;
 }
+
 function Key({ onClick, children, title, className }: KeyProps) {
   return (
     <button
@@ -60,7 +62,9 @@ export default function Keyboard({
         title="Enter Key"
         className="grid place-items-center col-span-3"
       >
-        <img
+        <Image
+          width={16}
+          height={16}
           src="/arrow-return-right.svg"
           alt="arrow-return-right"
           className="dark:filter-[invert()]"
@@ -78,7 +82,9 @@ export default function Keyboard({
         title="Backspace Key"
         className="grid place-items-center col-span-3"
       >
-        <img
+        <Image
+          width={16}
+          height={16}
           src="/backspace.svg"
           alt="backspace"
           className="dark:filter-[invert()]"
