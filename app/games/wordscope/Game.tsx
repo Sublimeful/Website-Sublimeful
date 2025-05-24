@@ -370,7 +370,7 @@ export default function Game({ mode }: GameProps) {
               }}
               className="cursor-pointer border-1 rounded-xl p-2"
             >
-              I Understand
+              I understand
             </button>
           </div>
         </div>
@@ -390,7 +390,7 @@ export default function Game({ mode }: GameProps) {
                 setWordId(newWordId);
                 wordIdInputRef.current.value = newWordId.toString();
               }}
-              className="w-8 h-8 cursor-pointer"
+              className="w-8 h-8 cursor-pointer select-none"
             >
               <Image
                 width={32}
@@ -436,7 +436,7 @@ export default function Game({ mode }: GameProps) {
                 setWordId(newWordId);
                 wordIdInputRef.current.value = newWordId.toString();
               }}
-              className="w-8 h-8 cursor-pointer"
+              className="w-8 h-8 cursor-pointer select-none"
             >
               <Image
                 width={32}
