@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <main className="border-t-1">
+    <main className="border-t-1 pb-16">
       <Image
         width={576}
         height={144}

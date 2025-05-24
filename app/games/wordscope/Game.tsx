@@ -9,7 +9,10 @@ import styles from "./styles.module.css";
 import { shuffleArrayWithSeed } from "./random";
 import { WordscopeGames } from "./types";
 
-const dayInMs = 1000 * 60 * 60 * 24;
+const secondInMs = 1000;
+const minuteInMs = secondInMs * 60;
+const hourInMs = minuteInMs * 60;
+const dayInMs = hourInMs * 24;
 
 interface GameProps {
   mode: "daily" | "unlimited";
@@ -28,6 +31,7 @@ export default function Game({ mode }: GameProps) {
     "idle",
   );
   const [wordId, setWordId] = useState(Math.floor(Date.now() / dayInMs));
+  const [msUntilTomorrow, setMsUntilTomorrow] = useState(0);
   const secretWord = getWord(wordId * (mode === "daily" ? 1 : -1));
   const gameId = `${mode}::${wordId}`;
   const wordIdInputRef = useRef<HTMLInputElement>(null);
@@ -99,9 +103,34 @@ export default function Game({ mode }: GameProps) {
       return;
     }
     setGuessHistory([...guessHistory, guess]);
+    // Show win popup if the guess is correct
+    if (guess === secretWord) {
+      setWinVisible(true);
+    }
     // Clear guess input
     setGuess("");
   }
+
+  // <{{ Connect ms until tomorrow event handler
+  useEffect(() => {
+    if (!winVisible) return;
+
+    function updateMsUntilTomorrow() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setUTCHours(24, 0, 0, 0);
+
+      setMsUntilTomorrow(tomorrow.getTime() - now.getTime());
+    }
+
+    // Initial update
+    updateMsUntilTomorrow();
+
+    // Set interval for future updates
+    const interval = setInterval(updateMsUntilTomorrow, 250);
+    return () => clearInterval(interval);
+  }, [winVisible]);
+  // }}>
 
   // <{{ Attach key press events
   useEffect(() => {
@@ -139,7 +168,7 @@ export default function Game({ mode }: GameProps) {
       removeEventListener("keydown", onKeyDown);
       removeEventListener("keypress", onKeyPress);
     };
-  }, [instructionsVisible, state, guess, notifications]);
+  }, [state, guess, wordId, instructionsVisible, notifications]);
   // }}>
 
   // <{{ Sync up scrolling for guess history and feedback
@@ -172,7 +201,10 @@ export default function Game({ mode }: GameProps) {
     const lastGuessFeedback = getGuessFeedback(lastGuess);
     if (lastGuessFeedback && lastGuessFeedback[1] === secretWord.length) {
       setState("completed");
-      setWinVisible(true);
+      // If the mode is daily, then always show the win popup on refresh
+      if (mode === "daily") {
+        setWinVisible(true);
+      }
     }
   }, [instructionsVisible, state, guessHistory]);
   // }}>
@@ -204,25 +236,26 @@ export default function Game({ mode }: GameProps) {
     }
     const guessHistory = games[gameId].guessHistory;
     const crossedOutLetters = games[gameId].crossedOutLetters;
+    // Set game state
+    setGuessHistory(guessHistory);
+    setCrossedOutLetters(crossedOutLetters);
     if (
-      !instructionsSeen && guessHistory.length === 0 &&
-      crossedOutLetters.length === 0
+      !instructionsSeen &&
+      ((guessHistory.length === 0 && crossedOutLetters.length === 0) ||
+        mode === "unlimited")
     ) {
       setInstructionsSeen(true);
       setInstructionsVisible(true);
     } else {
-      // Set game state
-      setGuessHistory(guessHistory);
-      setCrossedOutLetters(crossedOutLetters);
       setState("in progress");
     }
-  }, [wordId, mode]);
+    setGuess("");
+  }, [wordId]);
   // }}>
 
   // <{{ Update local storage when the guessHistory or crossedOutLetters states change
   useEffect(() => {
     if (guessHistory.length === 0 && crossedOutLetters.length === 0) return;
-    console.log(guessHistory, crossedOutLetters);
     const games: WordscopeGames =
       JSON.parse(localStorage.getItem("wordscope::games")) ?? {};
     const gameState = games[gameId] ??
@@ -269,9 +302,19 @@ export default function Game({ mode }: GameProps) {
             <h1 className="text-center font-bold text-3xl">Amazing!</h1>
             <br />
             <p>
-              You found the secret word in {guessHistory.length}{" "}
-              guesses! Come back tomorrow for a new word.
+              You found the secret word in {guessHistory.length} guesses!
             </p>
+            {mode === "daily" &&
+              (
+                <p>
+                  Come back in {Math.floor(msUntilTomorrow / hourInMs)} hours,
+                  {" "}
+                  {Math.floor((msUntilTomorrow % hourInMs) / minuteInMs)}{" "}
+                  minutes and{" "}
+                  {Math.floor((msUntilTomorrow % minuteInMs) / secondInMs)}{" "}
+                  seconds for a new secret word.
+                </p>
+              )}
             <br />
             <button
               type="button"
@@ -288,7 +331,18 @@ export default function Game({ mode }: GameProps) {
         <div className="fixed z-40 top-0 w-screen h-screen bg-[rgb(0,0,0,.8)]">
           <div className="fixed z-40 py-4 px-8 w-full sm:w-3/4 md:w-1/2 h-[calc-size(calc-size(max-content,size),min(100vh,size))] top-1/2 left-1/2 -translate-1/2 bg-white dark:bg-black border-2 overflow-y-scroll">
             <h1 className="text-center font-bold text-3xl">Wordscope</h1>
-            <br />
+            {mode === "daily"
+              ? (
+                <p className="text-center font-semibold">
+                  {new Date().toLocaleDateString("en-US", {
+                    timeZone: "UTC",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              )
+              : <br />}
             <h2 className="font-bold text-2xl">How to play?</h2>
             <ul className="list-inside list-disc">
               <li>Find the secret word. You have unlimited guesses.</li>
@@ -316,7 +370,7 @@ export default function Game({ mode }: GameProps) {
               }}
               className="cursor-pointer border-1 rounded-xl p-2"
             >
-              OK I got it shut up
+              I Understand
             </button>
           </div>
         </div>
@@ -327,7 +381,8 @@ export default function Game({ mode }: GameProps) {
             <button
               title="Randomize Word Id"
               type="button"
-              onClick={() => {
+              onClick={(event) => {
+                event.currentTarget.blur();
                 if (!wordIdInputRef.current) return;
                 const newWordId = Math.floor(
                   Math.random() * (Number.MAX_SAFE_INTEGER + 1),
@@ -371,7 +426,8 @@ export default function Game({ mode }: GameProps) {
             <button
               title="Next Word Id"
               type="button"
-              onClick={() => {
+              onClick={(event) => {
+                event.currentTarget.blur();
                 if (!wordIdInputRef.current) return;
                 const newWordId = Math.min(
                   wordId + 1,

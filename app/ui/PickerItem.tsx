@@ -3,7 +3,7 @@ export default function PickerItem({
   className,
   onPick,
 }: {
-  title: string,
+  title: string;
   className?: string;
   onPick?(): void;
 }) {
