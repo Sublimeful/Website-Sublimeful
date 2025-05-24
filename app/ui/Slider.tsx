@@ -17,6 +17,7 @@ export default function Slider({
 
   return (
     <button
+      type="button"
       title={title}
       onClick={(_) => {
         if (onClick) {
