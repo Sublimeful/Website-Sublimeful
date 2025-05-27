@@ -30,7 +30,7 @@ export default function Game({ mode }: GameProps) {
   const [state, setState] = useState<"idle" | "in progress" | "completed">(
     "idle",
   );
-  const [wordId, setWordId] = useState(Math.floor(Date.now() / dayInMs));
+  const [wordId, setWordId] = useState(0);
   const [msUntilTomorrow, setMsUntilTomorrow] = useState(0);
   const secretWord = getWord(wordId * (mode === "daily" ? 1 : -1));
   const gameId = `${mode}::${wordId}`;
@@ -253,6 +253,16 @@ export default function Game({ mode }: GameProps) {
   }, [wordId]);
   // }}>
 
+  // <{{ Initialize today's wordId
+  useEffect(() => {
+    const todaysId = Math.floor(Date.now() / dayInMs);
+    setWordId(todaysId);
+    if (mode === "unlimited" && wordIdInputRef.current) {
+      wordIdInputRef.current.value = todaysId.toString();
+    }
+  }, []);
+  // }}>
+
   // <{{ Update local storage when the guessHistory or crossedOutLetters states change
   useEffect(() => {
     if (guessHistory.length === 0 && crossedOutLetters.length === 0) return;
@@ -418,7 +428,6 @@ export default function Game({ mode }: GameProps) {
                 className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-1 p-1 px-2 w-40 dark:border-white focus:outline-none"
                 title="Word Id"
                 type="number"
-                defaultValue={wordId}
                 min={0}
                 max={Number.MAX_SAFE_INTEGER}
               />
