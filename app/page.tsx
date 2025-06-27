@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <main className="border-t-1 pt-4">
       <Link
-        className="w-10 h-10 rounded-full overflow-clip"
+        className="block m-auto w-[350px] h-[350px] rounded-full overflow-clip scale-90 hover:scale-100 border-6 border-black dark:border-white hover:border-green-400 cursor-pointer transition-all ease-out duration-1000 hover:shadow-[0_0_30px_#05df72]"
         href="https://www.linkedin.com/in/jqiangwu"
       >
         <Image
@@ -15,7 +15,6 @@ export default function Page() {
           height={350}
           src="/linkedin-profile-picture.jpg"
           alt="LinkedIn Profile Picture"
-          className="m-auto rounded-full border-6 border-black dark:border-white hover:border-green-400 cursor-pointer transition-all ease-out duration-1000 hover:shadow-[0_0_30px_#05df72] scale-90 hover:scale-100"
         />
       </Link>
       <p className="text-4xl text-center mb-32">
