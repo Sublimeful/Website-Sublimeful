@@ -2,6 +2,7 @@
 import "@/app/globals.css";
 
 import Link from "next/link";
+import Image from "next/image";
 import ThemeSlider from "./ui/ThemeSlider";
 import CursorPicker from "./ui/CursorPicker";
 import Cursor from "./ui/Cursor";
@@ -51,9 +52,12 @@ export default function RootLayout({
               className="w-10 h-10 rounded-full overflow-clip"
               href="https://github.com/Sublimeful"
             >
-              <img
-                src="https://avatars.githubusercontent.com/u/42013583"
+              <Image
+                width={40}
+                height={40}
+                src="/github-profile-picture.jpg"
                 alt="Github Profile Picture"
+                className="rounded-full border border-black dark:border-white"
               />
             </Link>
             <Link href="https://github.com/Sublimeful">Sublimeful</Link>
