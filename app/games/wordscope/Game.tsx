@@ -76,7 +76,9 @@ export default function Game({ mode }: GameProps) {
 
   function submitGuess() {
     if (guess.length !== secretWord.length) {
-      setNotifications([...notifications, "Not enough letters"]);
+      setNotifications((
+        prevNotifications,
+      ) => [...prevNotifications, "Not enough letters"]);
       setTimeout(
         () =>
           setNotifications((prevNotifications) => prevNotifications.slice(1)),
@@ -85,7 +87,9 @@ export default function Game({ mode }: GameProps) {
       return;
     }
     if (guessHistory.includes(guess)) {
-      setNotifications([...notifications, "Already guessed this word"]);
+      setNotifications((
+        prevNotifications,
+      ) => [...prevNotifications, "Already guessed this word"]);
       setTimeout(
         () =>
           setNotifications((prevNotifications) => prevNotifications.slice(1)),
@@ -94,7 +98,9 @@ export default function Game({ mode }: GameProps) {
       return;
     }
     if (!validWordlist.includes(guess)) {
-      setNotifications([...notifications, "Not in word list"]);
+      setNotifications((
+        prevNotifications,
+      ) => [...prevNotifications, "Not in word list"]);
       setTimeout(
         () =>
           setNotifications((prevNotifications) => prevNotifications.slice(1)),
@@ -102,7 +108,7 @@ export default function Game({ mode }: GameProps) {
       );
       return;
     }
-    setGuessHistory([...guessHistory, guess]);
+    setGuessHistory((prevGuessHistory) => [...prevGuessHistory, guess]);
     // Show win popup if the guess is correct
     if (guess === secretWord) {
       setWinVisible(true);
