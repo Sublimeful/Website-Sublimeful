@@ -30,7 +30,7 @@ export default function Game({ mode }: GameProps) {
   const [state, setState] = useState<"idle" | "in progress" | "completed">(
     "idle",
   );
-  const [wordId, setWordId] = useState(0);
+  const [wordId, setWordId] = useState<number | null>(null);
   const [msUntilTomorrow, setMsUntilTomorrow] = useState(0);
   const secretWord = getWord(wordId * (mode === "daily" ? 1 : -1));
   const gameId = `${mode}::${wordId}`;
@@ -235,6 +235,9 @@ export default function Game({ mode }: GameProps) {
 
   // <{{ Initialize or get game state
   useEffect(() => {
+    // Don't do anything if wordId is not set
+    if (wordId === null) return;
+    // Get game state from local storage
     const games: WordscopeGames =
       JSON.parse(localStorage.getItem("wordscope::games")) ?? {};
     if (!(gameId in games)) {
