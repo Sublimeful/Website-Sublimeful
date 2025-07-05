@@ -29,17 +29,24 @@ export default function Page() {
         </h1>
         <br />
         <Carousel className="m-auto" autoScroll>
-          {Array(5).fill(null).map((_, i) => (
-            <Link href="/games/wordscope" key={i}>
-              <Image
-                width={400}
-                height={-1}
-                src="/wordscope/logo.svg"
-                alt="Wordscope"
-                className="bg-white h-48 min-w-[400px]"
-              />
-            </Link>
-          ))}
+          <Link href="https://interviewai.sublimeful.org">
+            <Image
+              width={2600}
+              height={1248}
+              src="/interviewai/logo.png"
+              alt="InterviewAI"
+              className="bg-white h-48 min-w-[400px]"
+            />
+          </Link>
+          <Link href="/games/wordscope">
+            <Image
+              width={400}
+              height={-1}
+              src="/wordscope/logo.svg"
+              alt="Wordscope"
+              className="bg-white h-48 min-w-[400px]"
+            />
+          </Link>
         </Carousel>
       </section>
     </main>

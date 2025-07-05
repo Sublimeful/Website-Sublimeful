@@ -8198,4 +8198,4 @@ const sixLetterWords = [
 ];
 // }}>
 
-export default new Array(fiveLetterWords, sixLetterWords).flat();
+export default [fiveLetterWords, sixLetterWords].flat();

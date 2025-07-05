@@ -19,7 +19,7 @@ export default function Slider({
     <button
       type="button"
       title={title}
-      onClick={(_) => {
+      onClick={() => {
         if (onClick) {
           onClick(!checked);
         }

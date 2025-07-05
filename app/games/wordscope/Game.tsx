@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Keyboard from "./ui/Keyboard";
 import validWordlist from "./validWordlist";
 import wordlist from "./wordlist";
@@ -34,12 +34,13 @@ export default function Game({ mode }: GameProps) {
   const [msUntilTomorrow, setMsUntilTomorrow] = useState(0);
   const secretWord = getWord(wordId * (mode === "daily" ? 1 : -1));
   const gameId = `${mode}::${wordId}`;
+  const gameIdRef = useRef(gameId);
   const wordIdInputRef = useRef<HTMLInputElement>(null);
   const guessHistoryRef = useRef<HTMLDivElement>(null);
   const guessFeedbackRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<HTMLDivElement>(null);
 
-  function getGuessFeedback(guess: string) {
+  const getGuessFeedback = useCallback((guess: string) => {
     if (!guess || guess.length !== secretWord.length) return;
 
     const todaysWordCounter = {};
@@ -65,7 +66,7 @@ export default function Game({ mode }: GameProps) {
     }
 
     return [rightLetters, rightPositions];
-  }
+  }, [secretWord]);
 
   function getWord(id: number) {
     const rotation = Math.floor(id / wordlist.length);
@@ -74,7 +75,7 @@ export default function Game({ mode }: GameProps) {
     return wordlist[arrayOfIndices[Math.abs(id % wordlist.length)]];
   }
 
-  function submitGuess() {
+  const submitGuess = useCallback(() => {
     if (guess.length !== secretWord.length) {
       setNotifications((
         prevNotifications,
@@ -115,7 +116,13 @@ export default function Game({ mode }: GameProps) {
     }
     // Clear guess input
     setGuess("");
-  }
+  }, [guess, guessHistory, secretWord]);
+
+  // <{{ Update gameIdRef when gameId changes
+  useEffect(() => {
+    gameIdRef.current = gameId;
+  }, [gameId]);
+  // }}>
 
   // <{{ Connect ms until tomorrow event handler
   useEffect(() => {
@@ -174,7 +181,15 @@ export default function Game({ mode }: GameProps) {
       removeEventListener("keydown", onKeyDown);
       removeEventListener("keypress", onKeyPress);
     };
-  }, [state, guess, wordId, instructionsVisible, notifications]);
+  }, [
+    state,
+    guess,
+    wordId,
+    instructionsVisible,
+    notifications,
+    secretWord,
+    submitGuess,
+  ]);
   // }}>
 
   // <{{ Sync up scrolling for guess history and feedback
@@ -189,11 +204,14 @@ export default function Game({ mode }: GameProps) {
       }
     }
 
-    guessHistoryRef.current.addEventListener("scroll", syncScroll);
-    guessFeedbackRef.current.addEventListener("scroll", syncScroll);
+    const guessHistory = guessHistoryRef.current;
+    const guessFeedback = guessFeedbackRef.current;
+
+    guessHistory.addEventListener("scroll", syncScroll);
+    guessFeedback.addEventListener("scroll", syncScroll);
     return () => {
-      guessHistoryRef.current?.removeEventListener("scroll", syncScroll);
-      guessFeedbackRef.current?.removeEventListener("scroll", syncScroll);
+      guessHistory.removeEventListener("scroll", syncScroll);
+      guessFeedback.removeEventListener("scroll", syncScroll);
     };
   }, [smoothScrolling]);
   // }}>
@@ -212,7 +230,14 @@ export default function Game({ mode }: GameProps) {
         setWinVisible(true);
       }
     }
-  }, [instructionsVisible, state, guessHistory]);
+  }, [
+    instructionsVisible,
+    state,
+    guessHistory,
+    getGuessFeedback,
+    mode,
+    secretWord,
+  ]);
   // }}>
 
   // <{{ Auto scroll guess history when user guesses
@@ -240,11 +265,11 @@ export default function Game({ mode }: GameProps) {
     // Get game state from local storage
     const games: WordscopeGames =
       JSON.parse(localStorage.getItem("wordscope::games")) ?? {};
-    if (!(gameId in games)) {
-      games[gameId] = { guessHistory: [], crossedOutLetters: [] };
+    if (!(gameIdRef.current in games)) {
+      games[gameIdRef.current] = { guessHistory: [], crossedOutLetters: [] };
     }
-    const guessHistory = games[gameId].guessHistory;
-    const crossedOutLetters = games[gameId].crossedOutLetters;
+    const guessHistory = games[gameIdRef.current].guessHistory;
+    const crossedOutLetters = games[gameIdRef.current].crossedOutLetters;
     // Set game state
     setGuessHistory(guessHistory);
     setCrossedOutLetters(crossedOutLetters);
@@ -259,7 +284,7 @@ export default function Game({ mode }: GameProps) {
       setState("in progress");
     }
     setGuess("");
-  }, [wordId]);
+  }, [wordId, instructionsSeen, mode]);
   // }}>
 
   // <{{ Initialize today's wordId
@@ -269,7 +294,7 @@ export default function Game({ mode }: GameProps) {
     if (mode === "unlimited" && wordIdInputRef.current) {
       wordIdInputRef.current.value = todaysId.toString();
     }
-  }, []);
+  }, [mode]);
   // }}>
 
   // <{{ Update local storage when the guessHistory or crossedOutLetters states change
@@ -277,11 +302,11 @@ export default function Game({ mode }: GameProps) {
     if (guessHistory.length === 0 && crossedOutLetters.length === 0) return;
     const games: WordscopeGames =
       JSON.parse(localStorage.getItem("wordscope::games")) ?? {};
-    const gameState = games[gameId] ??
+    const gameState = games[gameIdRef.current] ??
       { guessHistory: [], crossedOutLetters: [] };
     gameState.guessHistory = guessHistory;
     gameState.crossedOutLetters = crossedOutLetters;
-    games[gameId] = gameState;
+    games[gameIdRef.current] = gameState;
     localStorage.setItem("wordscope::games", JSON.stringify(games));
   }, [guessHistory, crossedOutLetters]);
   // }}>

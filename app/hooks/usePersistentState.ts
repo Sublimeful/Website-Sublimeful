@@ -17,7 +17,7 @@ export default function usePersistentState<T>(
     if (value) {
       setInternalState(JSON.parse(value));
     }
-  }, []);
+  }, [key]);
 
   return [state, setState];
 }

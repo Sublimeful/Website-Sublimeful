@@ -23,7 +23,7 @@ export default function Cursor() {
     return () => {
       removeEventListener("mousemove", updateMousePos);
     };
-  }, []);
+  }, [setMousePos]);
 
   useEffect(() => {
     function updateCursor() {

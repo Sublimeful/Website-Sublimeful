@@ -131,7 +131,7 @@ class MersenneTwister {
 }
 
 /* shuffle array in place with seed */
-export function shuffleArrayWithSeed(arr: Array<any>, seed: number) {
+export function shuffleArrayWithSeed<T>(arr: Array<T>, seed: number) {
   const twister = new MersenneTwister(seed);
   for (let i = 0; i < arr.length; i++) {
     const j = Math.floor(arr.length * twister.random());

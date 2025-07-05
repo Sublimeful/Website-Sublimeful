@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Image from "next/image";
 
@@ -19,12 +19,12 @@ export default function Carousel(
     NodeJS.Timeout | null
   >(null);
 
-  function prevItem() {
+  const prevItem = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
-  }
-  function nextItem() {
+  }, [totalItems]);
+  const nextItem = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % totalItems);
-  }
+  }, [totalItems]);
 
   useEffect(() => {
     // Auto-scroll functionality
@@ -34,7 +34,7 @@ export default function Carousel(
       nextItem();
     }, 5000);
     return () => clearInterval(interval);
-  }, [autoScroll, autoScrollTimeout, totalItems]);
+  }, [autoScroll, autoScrollTimeout, totalItems, nextItem]);
 
   return (
     <div className={`flex flex-row w-min relative items-center ${className}`}>

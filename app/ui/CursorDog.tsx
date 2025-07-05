@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import usePersistentState from "../hooks/usePersistentState";
 
 interface CursorDogProps {
@@ -40,17 +40,17 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
     };
   }
 
-  function getNormDirVec(
+  const getNormDirVec = useCallback((
     vectorA: { x: number; y: number },
     vectorB: { x: number; y: number },
-  ) {
+  ) => {
     const dist = getDist(vectorA, vectorB);
     const dirVec = getDirVec(vectorA, vectorB);
 
     return { x: dirVec.x / dist, y: dirVec.y / dist };
-  }
+  }, []);
 
-  function follow() {
+  const follow = useCallback(() => {
     const dist = getDist(dogPos, mousePos);
 
     switch (dogState.current) {
@@ -74,9 +74,9 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
         }
         break;
     }
-  }
+  }, [dogPos, getNormDirVec, mousePos, setDogPos]);
 
-  function animate(time: number) {
+  const animate = useCallback((time: number) => {
     if (dogPos.x - mousePos.x > 0) setFacing("right");
     else setFacing("left");
 
@@ -88,23 +88,23 @@ export default function CursorDog({ mousePos }: CursorDogProps) {
         if (frame === -3) setFrame(0);
         else if (time - prevFrameTime > 75) {
           setPrevFrameTime(time);
-          setFrame((frame - 1) % 3);
+          setFrame((f) => (f - 1) % 3);
         }
         break;
     }
-  }
+  }, [dogPos, frame, mousePos, prevFrameTime]);
 
-  function update(time: number) {
+  const update = useCallback((time: number) => {
     follow();
     animate(time);
-  }
+  }, [animate, follow]);
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(update);
     return () => {
       cancelAnimationFrame(requestRef.current);
     };
-  }, [mousePos, dogPos, frame]);
+  }, [mousePos, dogPos, frame, update]);
 
   return (
     <div

@@ -5,7 +5,7 @@ export default function Page() {
       <br />
       <p className="text-2xl">
         Hi, my name is Jian Qiang Wu. I graduated from the University of
-        Illinois at Chicago with a Bachelor's degree in Computer Science,
+        Illinois at Chicago with a Bachelor&apos;s degree in Computer Science,
         awarded in May 2025.
         <br />
         <br />
