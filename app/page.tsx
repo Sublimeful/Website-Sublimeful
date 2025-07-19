@@ -38,6 +38,15 @@ export default function Page() {
               className="bg-white h-48 min-w-[400px]"
             />
           </Link>
+          <Link href="https://unravel.sublimeful.org">
+            <Image
+              width={2600}
+              height={1248}
+              src="/unravel/logo.png"
+              alt="UnRavel"
+              className="bg-white h-48 min-w-[400px]"
+            />
+          </Link>
           <Link href="/games/wordscope">
             <Image
               width={400}
